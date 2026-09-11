@@ -78,7 +78,7 @@ fn map_err(err: sqlx::Error) -> MediaStorageError {
 impl MediaAssetRepository for PgMediaAssetRepository {
     async fn insert(&self, asset: &MediaAsset) -> Result<(), MediaStorageError> {
         sqlx::query(
-            "INSERT INTO media_assets ( \
+            "INSERT INTO drama_media_assets ( \
                 id, tenant_id, user_id, episode_id, asset_kind, drive_uri, drive_space_id, \
                 drive_node_id, object_bucket, object_key, file_name, content_type, \
                 content_length, status, created_at, updated_at \
@@ -115,7 +115,7 @@ impl MediaAssetRepository for PgMediaAssetRepository {
             "SELECT id, tenant_id, user_id, episode_id, asset_kind, drive_uri, drive_space_id, \
                     drive_node_id, object_bucket, object_key, file_name, content_type, \
                     content_length, status, created_at, updated_at \
-             FROM media_assets WHERE tenant_id = $1 AND id = $2",
+             FROM drama_media_assets WHERE tenant_id = $1 AND id = $2",
         )
         .bind(tenant_id)
         .bind(id)
@@ -134,7 +134,7 @@ impl MediaAssetRepository for PgMediaAssetRepository {
             "SELECT id, tenant_id, user_id, episode_id, asset_kind, drive_uri, drive_space_id, \
                     drive_node_id, object_bucket, object_key, file_name, content_type, \
                     content_length, status, created_at, updated_at \
-             FROM media_assets \
+             FROM drama_media_assets \
              WHERE tenant_id = $1 AND episode_id = $2 \
              ORDER BY id ASC",
         )

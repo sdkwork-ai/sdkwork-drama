@@ -69,9 +69,9 @@ inventory in `apis/open-api/`.
 
 PostgreSQL schema owned by `database/` assets; ids are snowflake BIGINT,
 every business table carries `tenant_id`/`user_id` subject columns
-(`SUBJECT_ID_SPEC.md`). Tables: `episodes`, `media_assets` (FK → episodes,
-ON DELETE CASCADE). Drive-owned tables (`dr_drive_*`) are provisioned by the
-Drive embedded installer.
+(`SUBJECT_ID_SPEC.md`). Tables: `drama_episodes`, `drama_media_assets`
+(FK → `drama_episodes`, ON DELETE CASCADE). Drive-owned tables (`dr_drive_*`)
+are provisioned by the Drive embedded installer.
 
 ## 5. Configuration And Deployment
 

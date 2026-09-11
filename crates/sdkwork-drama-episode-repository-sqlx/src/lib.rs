@@ -73,7 +73,7 @@ fn map_err(err: sqlx::Error) -> RepositoryError {
 impl EpisodeRepository for PgEpisodeRepository {
     async fn insert(&self, episode: &Episode) -> Result<(), RepositoryError> {
         sqlx::query(
-            "INSERT INTO episodes (id, tenant_id, user_id, title, synopsis, status, created_at, updated_at) \
+            "INSERT INTO drama_episodes (id, tenant_id, user_id, title, synopsis, status, created_at, updated_at) \
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
         )
         .bind(episode.id)
@@ -97,7 +97,7 @@ impl EpisodeRepository for PgEpisodeRepository {
     ) -> Result<Option<Episode>, RepositoryError> {
         let row = sqlx::query_as::<_, EpisodeRow>(
             "SELECT id, tenant_id, user_id, title, synopsis, status, created_at, updated_at \
-             FROM episodes WHERE tenant_id = $1 AND id = $2",
+             FROM drama_episodes WHERE tenant_id = $1 AND id = $2",
         )
         .bind(tenant_id)
         .bind(id)
@@ -115,7 +115,7 @@ impl EpisodeRepository for PgEpisodeRepository {
     ) -> Result<Vec<Episode>, RepositoryError> {
         let rows = sqlx::query_as::<_, EpisodeRow>(
             "SELECT id, tenant_id, user_id, title, synopsis, status, created_at, updated_at \
-             FROM episodes \
+             FROM drama_episodes \
              WHERE tenant_id = $1 AND ($2::bigint IS NULL OR id > $2) \
              ORDER BY id ASC \
              LIMIT $3",
@@ -131,7 +131,7 @@ impl EpisodeRepository for PgEpisodeRepository {
 
     async fn update(&self, episode: &Episode) -> Result<(), RepositoryError> {
         let result = sqlx::query(
-            "UPDATE episodes \
+            "UPDATE drama_episodes \
              SET title = $3, synopsis = $4, status = $5, updated_at = $6 \
              WHERE tenant_id = $1 AND id = $2",
         )
@@ -154,7 +154,7 @@ impl EpisodeRepository for PgEpisodeRepository {
     }
 
     async fn delete(&self, tenant_id: i64, id: i64) -> Result<bool, RepositoryError> {
-        let result = sqlx::query("DELETE FROM episodes WHERE tenant_id = $1 AND id = $2")
+        let result = sqlx::query("DELETE FROM drama_episodes WHERE tenant_id = $1 AND id = $2")
             .bind(tenant_id)
             .bind(id)
             .execute(&self.pool)

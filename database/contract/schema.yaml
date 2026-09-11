@@ -7,6 +7,7 @@ owner_team: sdkwork-drama
 compliance_level: L3
 engines:
   - postgres
+table_prefix: drama_
 id_strategy:
   type: snowflake
   provider: sdkwork-database-id
@@ -17,3 +18,10 @@ subject_columns:
 compliance:
   subject_id_spec: ../sdkwork-specs/SUBJECT_ID_SPEC.md
   privacy_spec: ../sdkwork-specs/PRIVACY_SPEC.md
+tables:
+  - name: drama_episodes
+    lifecycle_status: active
+    owner: sdkwork-drama
+  - name: drama_media_assets
+    lifecycle_status: active
+    owner: sdkwork-drama

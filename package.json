@@ -11,6 +11,16 @@
   },
   "scripts": {
     "sdk:build": "pnpm --filter @sdkwork/drama-app-sdk-generated-typescript run build",
-    "sdk:check": "node sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi/bin/publish-core.mjs --language typescript --project-dir sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi --action check"
+    "sdk:check": "node sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi/bin/publish-core.mjs --language typescript --project-dir sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi --action check",
+    "db:validate": "node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .",
+    "db:materialize:contract": "node ../sdkwork-specs/tools/materialize-database-contract-from-baseline.mjs --root . --migrations database/migrations/postgres --module-id drama --owner sdkwork-drama --table-prefix drama_",
+    "db:plan": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . plan",
+    "db:init": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . init",
+    "db:migrate": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . migrate",
+    "db:seed": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . seed",
+    "db:status": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . status",
+    "db:drift": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . drift",
+    "db:drift:check": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . drift-check",
+    "db:bootstrap": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . bootstrap"
   }
 }

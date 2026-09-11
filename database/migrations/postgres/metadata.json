@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.database.migration-metadata",
+  "engine": "postgres",
+  "sourcePolicy": "historical-immutable",
+  "migrations": {
+    "0001_drama_core.up.sql": {
+      "engine": "postgres",
+      "reversible": "false",
+      "rollback": "forward-fix",
+      "transactional": "true",
+      "lock": "lightweight",
+      "lock_timeout": "2s",
+      "statement_timeout": "30s",
+      "correctionReason": "This tracked historical migration carries prose comments only and no structured metadata header, so its metadata is recorded here per DATABASE_FRAMEWORK_SPEC.md section 7.2 rather than by rewriting the migration SQL, which stays byte-for-byte unchanged and checksum-covered. The migration creates the drama core tables and indexes, so a reversal would drop them and is lossy; the strategy is recorded as irreversible with a forward-fix rollback. It uses no explicit transaction control and no CREATE INDEX CONCURRENTLY, so transactional is true."
+    },
+    "0002_drama_prefix_tables.up.sql": {
+      "engine": "postgres",
+      "reversible": "true",
+      "rollback": "down-migration",
+      "transactional": "true",
+      "lock": "access-exclusive-rename",
+      "lock_timeout": "2s",
+      "statement_timeout": "30s"
+    }
+  }
+}

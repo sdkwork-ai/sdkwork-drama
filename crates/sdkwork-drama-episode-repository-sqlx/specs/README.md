@@ -12,7 +12,7 @@ Module-local spec system for the drama episode SQLx repository crate.
 
 - Implements: `sdkwork_drama_episode_service::EpisodeRepository`.
 - Forbidden dependencies: `axum` or any HTTP framework, route crates, assembly/gateway crates.
-- Table ownership: `drama.episodes` (schema `drama`, DDL authority under `database/`).
+- Table ownership: `drama_episodes` (shared `SDKWORK_DATABASE_SCHEMA` schema, DDL authority under `database/`).
 - Cursor pagination: `WHERE id > $cursor ORDER BY id ASC LIMIT $n` (UUIDv7 time-ordered).
 - Status decoding is defensive; the domain crate owns the authoritative status set.
 
