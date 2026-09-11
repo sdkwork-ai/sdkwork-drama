@@ -1,10 +1,14 @@
 [package]
+rust-version.workspace = true
 name = "sdkwork-drama-media-service"
 edition.workspace = true
 version.workspace = true
 license.workspace = true
 repository.workspace = true
 
+
+[lints]
+workspace = true
 [dependencies]
 sdkwork-drama-episode-service = { workspace = true }
 sdkwork-database-id = { workspace = true }

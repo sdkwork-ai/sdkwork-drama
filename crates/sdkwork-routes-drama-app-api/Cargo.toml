@@ -1,10 +1,14 @@
 [package]
+rust-version.workspace = true
 name = "sdkwork-routes-drama-app-api"
 edition.workspace = true
 version.workspace = true
 license.workspace = true
 repository.workspace = true
 
+
+[lints]
+workspace = true
 [dependencies]
 sdkwork-drama-episode-service = { workspace = true }
 sdkwork-drama-media-service = { workspace = true }
