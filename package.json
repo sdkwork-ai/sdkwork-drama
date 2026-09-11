@@ -21,6 +21,25 @@
     "db:status": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . status",
     "db:drift": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . drift",
     "db:drift:check": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . drift-check",
-    "db:bootstrap": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . bootstrap"
+    "db:bootstrap": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . bootstrap",
+    "test": "pnpm exec sdkwork-app test",
+    "clean": "pnpm exec sdkwork-app clean",
+    "verify": "pnpm exec sdkwork-app verify",
+    "dev:standalone": "pnpm exec sdkwork-app dev --deployment-profile standalone",
+    "dev:cloud": "pnpm exec sdkwork-app dev --deployment-profile cloud",
+    "dev": "pnpm dev:standalone",
+    "build": "pnpm exec sdkwork-app build",
+    "check": "pnpm exec sdkwork-app check",
+    "_sdkwork:test": "cargo test --workspace",
+    "_sdkwork:clean": "cargo clean",
+    "_sdkwork:verify": "pnpm run test",
+    "stop": "pnpm exec sdkwork-app stop",
+    "_sdkwork:build": "cargo build --workspace --release",
+    "_sdkwork:check": "pnpm run db:validate && pnpm run sdk:check && cargo check --workspace",
+    "api:assembly:materialize": "node ../sdkwork-specs/tools/materialize-api-assembly.mjs --root .",
+    "api:assembly:validate": "node ../sdkwork-specs/tools/validate-api-assembly.mjs --root ."
+  },
+  "devDependencies": {
+    "@sdkwork/app-topology": "workspace:*"
   }
 }
