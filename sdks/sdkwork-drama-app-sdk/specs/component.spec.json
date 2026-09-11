@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-drama-app-sdk",
+    "displayName": "SDKWork Drama App SDK",
+    "version": "0.1.0",
+    "type": "sdk-family",
+    "root": "sdks/sdkwork-drama-app-sdk",
+    "domain": "drama",
+    "capability": "episode-creation",
+    "surface": "app",
+    "languages": [
+      "typescript"
+    ],
+    "generated": true,
+    "manifests": [
+      "sdk-manifest.json"
+    ]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "SDK_SPEC.md",
+      "path": "../../../sdkwork-specs/SDK_SPEC.md",
+      "purpose": "SDK family contract authority."
+    },
+    {
+      "file": "SDK_WORKSPACE_GENERATION_SPEC.md",
+      "path": "../../../sdkwork-specs/SDK_WORKSPACE_GENERATION_SPEC.md",
+      "purpose": "Generation chain authority (sdkgen inputs and outputs)."
+    },
+    {
+      "file": "API_SPEC.md",
+      "path": "../../../sdkwork-specs/API_SPEC.md",
+      "purpose": "Wire envelope authority mirrored by generated clients."
+    }
+  ],
+  "contracts": {
+    "layerRole": "sdk-facade",
+    "publicExports": [
+      "sdkwork-drama-app-sdk-typescript/src/index.ts"
+    ],
+    "providedPorts": [
+      {
+        "name": "dramaAppSdk",
+        "export": "sdkwork-drama-app-sdk-typescript/src/index.ts"
+      }
+    ],
+    "requiredPorts": [],
+    "runtimeEntrypoints": [],
+    "routeManifest": null,
+    "sdkClients": [
+      "@sdkwork/drama-app-sdk"
+    ],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [
+      "app-api"
+    ],
+    "events": [],
+    "configKeys": []
+  },
+  "verification": {
+    "commands": [
+      "node sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi/bin/publish-core.mjs --language typescript --project-dir sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi --action check",
+      "pnpm --filter @sdkwork/drama-app-sdk-generated-typescript run build",
+      "node ../sdkwork-specs/tools/check-app-sdk-consumer-imports.mjs --workspace .."
+    ]
+  }
+}

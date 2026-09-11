@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "kind": "sdkwork.database.module",
+  "moduleId": "drama",
+  "serviceCode": "DRAMA",
+  "displayName": "Drama Database",
+  "owner": "sdkwork-drama",
+  "engines": [
+    "postgres"
+  ],
+  "defaultEngine": "postgres",
+  "tablePrefix": "",
+  "contractVersion": "1.0.0",
+  "baselineStrategy": "baseline-plus-migrations",
+  "modules": [],
+  "lifecycle": {
+    "autoMigrate": false,
+    "seedOnBoot": false,
+    "driftCheckIntervalSec": 60
+  },
+  "paths": {
+    "contract": "contract/schema.yaml",
+    "migrations": "migrations",
+    "seeds": "seeds",
+    "driftPolicy": "drift/policy.yaml"
+  },
+  "spi": {
+    "provider": "default",
+    "hooks": []
+  },
+  "databaseRole": "authoritative-server"
+}

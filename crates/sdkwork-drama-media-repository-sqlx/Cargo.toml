@@ -1,0 +1,13 @@
+[package]
+name = "sdkwork-drama-media-repository-sqlx"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sdkwork-drama-media-service = { workspace = true }
+async-trait = { workspace = true }
+sqlx = { workspace = true }
+chrono = { workspace = true }
+tracing = { workspace = true }

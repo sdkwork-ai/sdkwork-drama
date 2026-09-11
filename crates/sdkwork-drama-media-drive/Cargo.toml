@@ -1,0 +1,17 @@
+[package]
+name = "sdkwork-drama-media-drive"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sdkwork-drama-media-service = { workspace = true }
+sdkwork-drive-uploader-service = { workspace = true }
+sdkwork-drive-object-runtime = { workspace = true }
+sdkwork-drive-workspace-service = { workspace = true }
+sdkwork-drive-storage-contract = { workspace = true }
+sdkwork-utils-rust = { workspace = true }
+async-trait = { workspace = true }
+sqlx = { workspace = true }
+tracing = { workspace = true }

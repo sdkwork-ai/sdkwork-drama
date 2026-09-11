@@ -1,0 +1,1289 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SDKWork Drama App API",
+    "version": "0.1.0",
+    "description": "App API contract for SDKWork Drama short-drama episode authoring and media assets. Protected operations use the SDKWork dual-token protocol (Authorization: Bearer <auth_token> plus Access-Token header). All HTTP 2xx JSON responses use the SdkWorkApiResponse envelope ({ code, data, traceId }); all HTTP 4xx/5xx error responses use RFC 9457 application/problem+json with numeric code and traceId. Snowflake int64 entity ids serialize as JSON strings. Authority: ../sdkwork-specs/API_SPEC.md sections 4.5 and 14-16. Contract changes require human review before SDK regeneration.",
+    "x-sdkwork-wire-protocol": "sdkwork-v3"
+  },
+  "servers": [
+    {
+      "url": "{applicationPublicHttpUrl}",
+      "description": "Application public ingress",
+      "variables": {
+        "applicationPublicHttpUrl": {
+          "default": "http://127.0.0.1:8090",
+          "description": "Public HTTP URL of the drama application ingress (etc/ topology profiles own real values)."
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "system",
+      "description": "Standard health and readiness probes."
+    },
+    {
+      "name": "episode",
+      "description": "Episode authoring operations."
+    },
+    {
+      "name": "media",
+      "description": "Episode media assets stored through SDKWork Drive."
+    }
+  ],
+  "paths": {
+    "/app/v3/api/system/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "operationId": "systemHealth.retrieve",
+        "summary": "Liveness probe.",
+        "description": "Standard-owner health endpoint; anonymous access.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Process is live.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemHealthResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-sdkwork-auth-mode": "anonymous"
+      }
+    },
+    "/app/v3/api/system/ready": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "operationId": "systemReady.retrieve",
+        "summary": "Readiness probe.",
+        "description": "Standard-owner readiness endpoint backed by process ReadinessCheck implementations; anonymous access.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Process is ready.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemReadyResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Process dependencies are not ready.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        },
+        "x-sdkwork-auth-mode": "anonymous"
+      }
+    },
+    "/app/v3/api/episodes": {
+      "get": {
+        "tags": [
+          "episode"
+        ],
+        "operationId": "episodes.list",
+        "summary": "List episodes with cursor pagination.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque decimal snowflake id cursor from pageInfo.nextCursor.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "description": "Page size, clamped to 1..=100; default 20.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episode page retrieved.",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodePageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid dual token.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "episode"
+        ],
+        "operationId": "episodes.create",
+        "summary": "Create a draft episode.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEpisodeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Draft episode created. (HTTP 201, data.item).",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeItemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/v3/api/episodes/{episodeId}": {
+      "get": {
+        "tags": [
+          "episode"
+        ],
+        "operationId": "episodes.retrieve",
+        "summary": "Retrieve one episode under the caller tenant.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "episodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episode retrieved.",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid dual token.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found within the caller tenant.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "episode"
+        ],
+        "operationId": "episodes.update",
+        "summary": "Patch draft metadata of one episode.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "episodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEpisodeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Episode updated.",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid dual token.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found within the caller tenant.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "episode"
+        ],
+        "operationId": "episodes.delete",
+        "summary": "Delete one episode.",
+        "description": "204 carries no body; the trace id travels in X-SdkWork-Trace-Id only (API_SPEC.md 15.1).",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "episodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Episode deleted.",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid dual token.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found within the caller tenant.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/v3/api/episodes/{episodeId}/publish": {
+      "post": {
+        "tags": [
+          "episode"
+        ],
+        "operationId": "episodes.publish",
+        "summary": "Publish a draft episode.",
+        "description": "Command operation: only draft episodes can transition to published; other states yield 409 Conflict.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "episodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episode published.",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EpisodeResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid dual token.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found within the caller tenant.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State conflict (invalid status transition).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app/v3/api/episodes/{episodeId}/assets": {
+      "get": {
+        "tags": [
+          "media"
+        ],
+        "operationId": "episodeAssets.list",
+        "summary": "List media assets attached to an episode.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "episodeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Media asset list retrieved.",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaAssetListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid dual token.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found within the caller tenant.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "media"
+        ],
+        "operationId": "episodeAssets.create",
+        "summary": "Upload a media asset for an episode through SDKWork Drive.",
+        "description": "Proxied upload through SDKWork Drive. File bytes travel as canonical base64 JSON (platform content payload idiom); the decoded content cap is 64 MiB — larger episode videos must use the drive presigned direct-upload flow.",
+        "x-sdkwork-api-surface": "app-api",
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMediaAssetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Media asset stored and registered. (HTTP 201, data.item).",
+            "headers": {
+              "X-SdkWork-Trace-Id": {
+                "$ref": "#/components/headers/TraceId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaAssetItemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Access-Token",
+        "description": "SDKWork access token header (IAM_SPEC.md)."
+      },
+      "AuthToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "SDKWork auth token: Authorization: Bearer <auth_token> (IAM_SPEC.md)."
+      }
+    },
+    "headers": {
+      "TraceId": {
+        "description": "Server-owned trace id echoed for correlation.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Validation failed.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            }
+          }
+        }
+      },
+      "AuthenticationRequired": {
+        "description": "Authentication required or invalid dual token.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found within the caller tenant.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "State conflict (invalid status transition).",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "SnowflakeId": {
+        "type": "string",
+        "description": "Positive snowflake entity id rendered as a decimal string (SUBJECT_ID_SPEC.md).",
+        "pattern": "^[0-9]+$"
+      },
+      "SystemHealthData": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok"
+            ]
+          }
+        }
+      },
+      "SystemReadyData": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "not_ready"
+            ]
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "EpisodeStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "published",
+          "retired"
+        ]
+      },
+      "CreateEpisodeRequest": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "synopsis": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateEpisodeRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "nullable": true
+          },
+          "synopsis": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateMediaAssetRequest": {
+        "type": "object",
+        "required": [
+          "kind",
+          "fileName",
+          "contentType",
+          "content",
+          "encoding"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "cover",
+              "video",
+              "audio",
+              "subtitle"
+            ]
+          },
+          "fileName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contentType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 89478486,
+            "description": "Canonical base64 of the file bytes; decoded cap 67108864 bytes (64 MiB)."
+          },
+          "encoding": {
+            "type": "string",
+            "enum": [
+              "base64"
+            ]
+          }
+        }
+      },
+      "Episode": {
+        "type": "object",
+        "required": [
+          "id",
+          "tenantId",
+          "title",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeId"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/SnowflakeId"
+          },
+          "title": {
+            "type": "string"
+          },
+          "synopsis": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/EpisodeStatus"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PageInfo": {
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "offset",
+              "cursor"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalItems": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalPages": {
+            "type": "integer",
+            "nullable": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasMore": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "EpisodePageData": {
+        "type": "object",
+        "required": [
+          "items",
+          "pageInfo"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Episode"
+            }
+          },
+          "pageInfo": {
+            "$ref": "#/components/schemas/PageInfo"
+          }
+        }
+      },
+      "SdkWorkApiResponse": {
+        "type": "object",
+        "description": "Generic success envelope: { code: 0, data, traceId }.",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "type": "object"
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "EpisodeResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "$ref": "#/components/schemas/Episode"
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "EpisodePageResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "$ref": "#/components/schemas/EpisodePageData"
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "MediaAsset": {
+        "type": "object",
+        "required": [
+          "id",
+          "episodeId",
+          "kind",
+          "driveUri",
+          "fileName",
+          "contentType",
+          "contentLength",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeId"
+          },
+          "episodeId": {
+            "$ref": "#/components/schemas/SnowflakeId"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "cover",
+              "video",
+              "audio",
+              "subtitle"
+            ]
+          },
+          "driveUri": {
+            "type": "string",
+            "description": "Stable drive reference: drive://spaces/{spaceId}/nodes/{nodeId}."
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "contentLength": {
+            "type": "string",
+            "format": "int64",
+            "x-sdkwork-int64-string": true,
+            "minimum": 0,
+            "description": "Byte length as an int64 string (API_SPEC 13.6)."
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MediaAssetListData": {
+        "type": "object",
+        "required": [
+          "items",
+          "pageInfo"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaAsset"
+            }
+          },
+          "pageInfo": {
+            "$ref": "#/components/schemas/PageInfo"
+          }
+        }
+      },
+      "MediaAssetResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "$ref": "#/components/schemas/MediaAsset"
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "MediaAssetListResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "$ref": "#/components/schemas/MediaAssetListData"
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "description": "RFC 9457 problem+json with SDKWork platform extensions.",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "code",
+          "traceId",
+          "instance"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer",
+            "description": "Numeric SdkWorkResultCode."
+          },
+          "traceId": {
+            "type": "string"
+          },
+          "operationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "i18nKey": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "EpisodeItemData": {
+        "type": "object",
+        "required": [
+          "item"
+        ],
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Episode"
+          }
+        }
+      },
+      "MediaAssetItemData": {
+        "type": "object",
+        "required": [
+          "item"
+        ],
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/MediaAsset"
+          }
+        }
+      },
+      "EpisodeItemResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "$ref": "#/components/schemas/EpisodeItemData"
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "MediaAssetItemResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "$ref": "#/components/schemas/MediaAssetItemData"
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "SystemHealthResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "ok"
+                ]
+              }
+            }
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      },
+      "SystemReadyResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "const": 0
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "ready",
+                  "not_ready"
+                ]
+              },
+              "detail": {
+                "type": "string"
+              }
+            }
+          },
+          "traceId": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

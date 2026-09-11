@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 3,
+  "kind": "sdkwork.app",
+  "app": {
+    "code": "drama",
+    "name": "SDKWork Drama",
+    "officialWebsiteUrl": "https://drama.sdkwork.com",
+    "description": "Short-drama (短剧) video creation application: episode authoring, media assets, publishing, and playback.",
+    "domain": "drama",
+    "ownerTeam": "sdkwork-drama"
+  },
+  "backend": {
+    "family": "rust-axum",
+    "framework": "rust-axum",
+    "entrypoints": {
+      "standaloneGateway": "crates/sdkwork-api-drama-standalone-gateway"
+    },
+    "ownedSurfaces": [
+      "app-api"
+    ],
+    "apiAuthorities": {
+      "appApi": "apis/open-api/drama/drama-app-api.openapi.json"
+    },
+    "sdkClients": {
+      "appApi": "@sdkwork/drama-app-sdk",
+      "backendApi": "@sdkwork/drama-backend-sdk",
+      "openApi": "@sdkwork/drama-sdk"
+    }
+  },
+  "runtime": {
+    "supportedDeploymentProfiles": [
+      "standalone",
+      "cloud"
+    ],
+    "defaultDeploymentProfile": "standalone"
+  },
+  "media": {},
+  "publish": {},
+  "artifacts": {},
+  "release": {},
+  "security": {},
+  "devApp": {},
+  "metadata": {}
+}

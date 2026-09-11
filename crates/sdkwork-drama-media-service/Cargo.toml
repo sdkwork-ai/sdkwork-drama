@@ -1,0 +1,14 @@
+[package]
+name = "sdkwork-drama-media-service"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sdkwork-drama-episode-service = { workspace = true }
+sdkwork-database-id = { workspace = true }
+async-trait = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }

@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 5,
+  "kind": "sdkwork.app.topology",
+  "appId": "sdkwork-drama",
+  "applicationCode": "drama",
+  "archetype": "application-http-gateway",
+  "profileRoot": "etc/topology",
+  "profilePattern": "{deploymentProfile}.{environment}.env",
+  "vocabulary": {
+    "deploymentProfile": {
+      "allowed": [
+        "standalone",
+        "cloud"
+      ]
+    },
+    "environment": {
+      "allowed": [
+        "development",
+        "test",
+        "staging",
+        "demo",
+        "production"
+      ]
+    }
+  },
+  "defaults": {
+    "developmentProfileId": "standalone.development",
+    "productionProfileId": "cloud.production",
+    "gatewayBind": "127.0.0.1:3900"
+  },
+  "profileFiles": {
+    "standalone.development": "etc/topology/standalone.development.env",
+    "standalone.test": "etc/topology/standalone.test.env",
+    "standalone.staging": "etc/topology/standalone.staging.env",
+    "standalone.demo": "etc/topology/standalone.demo.env",
+    "standalone.production": "etc/topology/standalone.production.env",
+    "cloud.development": "etc/topology/cloud.development.env",
+    "cloud.test": "etc/topology/cloud.test.env",
+    "cloud.staging": "etc/topology/cloud.staging.env",
+    "cloud.demo": "etc/topology/cloud.demo.env",
+    "cloud.production": "etc/topology/cloud.production.env"
+  },
+  "envKeys": {
+    "deploymentProfile": "SDKWORK_DRAMA_DEPLOYMENT_PROFILE",
+    "environment": "SDKWORK_DRAMA_ENVIRONMENT",
+    "profileId": "SDKWORK_DRAMA_PROFILE_ID",
+    "standaloneGatewayBind": "SDKWORK_DRAMA_APPLICATION_PUBLIC_INGRESS_BIND",
+    "apiGatewayBaseUrl": "SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL"
+  },
+  "surfaces": {
+    "application.public-ingress": {
+      "connectivityPlane": "application",
+      "protocols": [
+        "http"
+      ],
+      "bindEnv": "SDKWORK_DRAMA_APPLICATION_PUBLIC_INGRESS_BIND",
+      "httpUrlEnv": "SDKWORK_DRAMA_APPLICATION_PUBLIC_HTTP_URL"
+    },
+    "platform.api-gateway": {
+      "connectivityPlane": "platform",
+      "protocols": [
+        "http"
+      ],
+      "httpUrlEnv": "SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL"
+    }
+  },
+  "cloudPublicHosts": {
+    "application.public-ingress": {
+      "httpHost": "drama.sdkwork.com",
+      "httpHosts": [
+        "drama.sdkwork.com",
+        "drama.birdcoder.com",
+        "drama.dtupay.com",
+        "drama.noaper.com",
+        "drama.sdkwork.cn",
+        "drama.birdcoder.cn",
+        "drama.dtupay.cn",
+        "drama.noaper.cn",
+        "drama.skubc.com",
+        "drama.skubc.cn",
+        "drama.zowalk.com",
+        "drama.zowalk.cn",
+        "drama.offer86.com",
+        "drama.offer86.cn",
+        "drama.86offer.com",
+        "drama.86offer.cn"
+      ],
+      "environments": {
+        "development": {
+          "httpHosts": [
+            "drama-dev.sdkwork.com",
+            "drama-dev.birdcoder.com",
+            "drama-dev.dtupay.com",
+            "drama-dev.noaper.com",
+            "drama-dev.sdkwork.cn",
+            "drama-dev.birdcoder.cn",
+            "drama-dev.dtupay.cn",
+            "drama-dev.noaper.cn",
+            "drama-dev.skubc.com",
+            "drama-dev.skubc.cn",
+            "drama-dev.zowalk.com",
+            "drama-dev.zowalk.cn",
+            "drama-dev.offer86.com",
+            "drama-dev.offer86.cn",
+            "drama-dev.86offer.com",
+            "drama-dev.86offer.cn"
+          ]
+        },
+        "test": {
+          "httpHosts": [
+            "drama-test.sdkwork.com",
+            "drama-test.birdcoder.com",
+            "drama-test.dtupay.com",
+            "drama-test.noaper.com",
+            "drama-test.sdkwork.cn",
+            "drama-test.birdcoder.cn",
+            "drama-test.dtupay.cn",
+            "drama-test.noaper.cn",
+            "drama-test.skubc.com",
+            "drama-test.skubc.cn",
+            "drama-test.zowalk.com",
+            "drama-test.zowalk.cn",
+            "drama-test.offer86.com",
+            "drama-test.offer86.cn",
+            "drama-test.86offer.com",
+            "drama-test.86offer.cn"
+          ]
+        },
+        "staging": {
+          "httpHosts": [
+            "drama-staging.sdkwork.com",
+            "drama-staging.birdcoder.com",
+            "drama-staging.dtupay.com",
+            "drama-staging.noaper.com",
+            "drama-staging.sdkwork.cn",
+            "drama-staging.birdcoder.cn",
+            "drama-staging.dtupay.cn",
+            "drama-staging.noaper.cn",
+            "drama-staging.skubc.com",
+            "drama-staging.skubc.cn",
+            "drama-staging.zowalk.com",
+            "drama-staging.zowalk.cn",
+            "drama-staging.offer86.com",
+            "drama-staging.offer86.cn",
+            "drama-staging.86offer.com",
+            "drama-staging.86offer.cn"
+          ]
+        }
+      }
+    },
+    "platform.api-gateway": {
+      "httpHost": "api.sdkwork.com",
+      "httpHosts": [
+        "api.sdkwork.com",
+        "api.birdcoder.com",
+        "api.dtupay.com",
+        "api.noaper.com",
+        "api.sdkwork.cn",
+        "api.birdcoder.cn",
+        "api.dtupay.cn",
+        "api.noaper.cn",
+        "api.skubc.com",
+        "api.skubc.cn",
+        "api.zowalk.com",
+        "api.zowalk.cn",
+        "api.offer86.com",
+        "api.offer86.cn",
+        "api.86offer.com",
+        "api.86offer.cn"
+      ],
+      "environments": {
+        "development": {
+          "httpHosts": [
+            "api-dev.sdkwork.com",
+            "api-dev.birdcoder.com",
+            "api-dev.dtupay.com",
+            "api-dev.noaper.com",
+            "api-dev.sdkwork.cn",
+            "api-dev.birdcoder.cn",
+            "api-dev.dtupay.cn",
+            "api-dev.noaper.cn",
+            "api-dev.skubc.com",
+            "api-dev.skubc.cn",
+            "api-dev.zowalk.com",
+            "api-dev.zowalk.cn",
+            "api-dev.offer86.com",
+            "api-dev.offer86.cn",
+            "api-dev.86offer.com",
+            "api-dev.86offer.cn"
+          ]
+        },
+        "test": {
+          "httpHosts": [
+            "api-test.sdkwork.com",
+            "api-test.birdcoder.com",
+            "api-test.dtupay.com",
+            "api-test.noaper.com",
+            "api-test.sdkwork.cn",
+            "api-test.birdcoder.cn",
+            "api-test.dtupay.cn",
+            "api-test.noaper.cn",
+            "api-test.skubc.com",
+            "api-test.skubc.cn",
+            "api-test.zowalk.com",
+            "api-test.zowalk.cn",
+            "api-test.offer86.com",
+            "api-test.offer86.cn",
+            "api-test.86offer.com",
+            "api-test.86offer.cn"
+          ]
+        },
+        "staging": {
+          "httpHosts": [
+            "api-staging.sdkwork.com",
+            "api-staging.birdcoder.com",
+            "api-staging.dtupay.com",
+            "api-staging.noaper.com",
+            "api-staging.sdkwork.cn",
+            "api-staging.birdcoder.cn",
+            "api-staging.dtupay.cn",
+            "api-staging.noaper.cn",
+            "api-staging.skubc.com",
+            "api-staging.skubc.cn",
+            "api-staging.zowalk.com",
+            "api-staging.zowalk.cn",
+            "api-staging.offer86.com",
+            "api-staging.offer86.cn",
+            "api-staging.86offer.com",
+            "api-staging.86offer.cn"
+          ]
+        }
+      }
+    }
+  }
+}

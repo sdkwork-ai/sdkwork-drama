@@ -1,0 +1,5 @@
+packages:
+  - "sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript"
+  - "sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi"
+  - "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
+  - "../sdkwork-utils/packages/sdkwork-utils-typescript"

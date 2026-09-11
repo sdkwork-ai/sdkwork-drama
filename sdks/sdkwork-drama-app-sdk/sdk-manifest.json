@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sdkName": "sdkwork-drama-app-sdk",
+  "sdkOwner": "sdkwork-drama",
+  "apiAuthority": "sdkwork-drama-app-api",
+  "sdkFamily": "sdkwork-drama-app-sdk",
+  "sdkType": "app",
+  "apiPrefix": "/app/v3/api",
+  "generationInputSpec": "../../apis/open-api/drama/drama-app-api.openapi.json",
+  "generatedPackages": {
+    "typescript": {
+      "language": "typescript",
+      "packageName": "sdkwork-drama-app-sdk-generated-typescript",
+      "generatedOutput": "sdkwork-drama-app-sdk-typescript/generated/server-openapi"
+    }
+  },
+  "sdkDependencies": [],
+  "verification": [
+    "node ../sdkwork-specs/tools/check-app-sdk-consumer-imports.mjs --workspace .."
+  ]
+}

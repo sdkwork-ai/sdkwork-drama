@@ -1,0 +1,19 @@
+schema_version: 1
+kind: sdkwork.database.schema
+database_role: authoritative-server
+module_id: drama
+contract_version: 1.0.0
+owner_team: sdkwork-drama
+compliance_level: L3
+engines:
+  - postgres
+id_strategy:
+  type: snowflake
+  provider: sdkwork-database-id
+  public_id: int64_string
+subject_columns:
+  - tenant_id
+  - user_id
+compliance:
+  subject_id_spec: ../sdkwork-specs/SUBJECT_ID_SPEC.md
+  privacy_spec: ../sdkwork-specs/PRIVACY_SPEC.md

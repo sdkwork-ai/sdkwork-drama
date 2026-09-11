@@ -1,0 +1,13 @@
+[package]
+name = "sdkwork-api-drama-standalone-gateway"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sdkwork-api-drama-assembly = { workspace = true }
+sdkwork-web-bootstrap = { workspace = true }
+axum = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }

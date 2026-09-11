@@ -1,0 +1,104 @@
+{
+  "$schema": "../sdkwork-github-workflow/schemas/sdkwork-workflow.schema.json",
+  "schemaVersion": "2026-06-06.sdkwork.workflow.v1",
+  "app": {
+    "id": "sdkwork-drama",
+    "name": "SDKWork Drama",
+    "repository": "sdkwork-ai/sdkwork-drama",
+    "sourcePath": ".",
+    "configPath": "sdkwork.app.config.json"
+  },
+  "release": {
+    "artifactPrefix": "sdkwork-drama",
+    "defaultVersion": "0.1.0"
+  },
+  "dependencies": [
+    {
+      "id": "sdkwork-database",
+      "repository": "sdkwork-ai/sdkwork-database",
+      "refInput": "SDKWORK_DATABASE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-drive",
+      "repository": "sdkwork-ai/sdkwork-drive",
+      "refInput": "SDKWORK_DRIVE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-iam",
+      "repository": "sdkwork-ai/sdkwork-iam",
+      "refInput": "SDKWORK_IAM_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-id",
+      "repository": "sdkwork-ai/sdkwork-id",
+      "refInput": "SDKWORK_ID_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-utils",
+      "repository": "sdkwork-ai/sdkwork-utils",
+      "refInput": "SDKWORK_UTILS_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-web-framework",
+      "repository": "sdkwork-ai/sdkwork-web-framework",
+      "refInput": "SDKWORK_WEB_FRAMEWORK_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    }
+  ],
+  "toolchains": {
+    "rust": "stable"
+  },
+  "lifecycle": {},
+  "targets": [
+    {
+      "id": "linux-x64-standalone-server-tar-gz",
+      "profileBinding": "fixed",
+      "deploymentProfile": "standalone",
+      "runtimeTarget": "server",
+      "profile": "server",
+      "platform": "linux",
+      "architecture": "x64",
+      "formats": [
+        "tar.gz"
+      ],
+      "runner": "ubuntu-24.04",
+      "outputGlobs": [
+        "dist/release-packages/sdkwork-drama-linux-x64-standalone-server-tar-gz-0.1.0.tar.gz",
+        "dist/release-evidence/linux-x64-standalone-server-tar-gz/*",
+        "target/release/sdkwork-api-drama-standalone-gateway*",
+        "database/**",
+        "etc/**",
+        "deployments/**",
+        "sdkwork.app.config.json"
+      ],
+      "artifactPath": "dist/release-packages/sdkwork-drama-linux-x64-standalone-server-tar-gz-0.1.0.tar.gz"
+    },
+    {
+      "id": "container-x64-cloud-container-kubernetes-tar-gz",
+      "profileBinding": "fixed",
+      "deploymentProfile": "cloud",
+      "runtimeTarget": "container",
+      "profile": "container",
+      "platform": "container",
+      "architecture": "x64",
+      "variant": "kubernetes",
+      "formats": [
+        "tar.gz"
+      ],
+      "runner": "ubuntu-24.04",
+      "outputGlobs": [
+        "dist/release-packages/sdkwork-drama-container-x64-cloud-container-kubernetes-tar-gz-0.1.0.tar.gz",
+        "dist/release-evidence/container-x64-cloud-container-kubernetes-tar-gz/*"
+      ],
+      "artifactPath": "dist/release-packages/sdkwork-drama-container-x64-cloud-container-kubernetes-tar-gz-0.1.0.tar.gz"
+    }
+  ],
+  "security": {},
+  "publish": {},
+  "deployments": {}
+}

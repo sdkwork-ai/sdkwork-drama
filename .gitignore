@@ -1,0 +1,33 @@
+# SDKWork baseline ignores
+
+# Build artifacts
+target/
+dist/
+build/
+out/
+*.rs.bk
+
+# Dependencies
+node_modules/
+
+# Local IDE / editor state
+.idea/
+.vscode/
+*.swp
+
+# Environment and secrets (source-controlled config lives in etc/)
+.env
+.env.*
+*.local
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+tmp/
+
+# Tracked example templates are never secrets (SDKWork ENVIRONMENT_SPEC)
+!.env.example
+!.env.*.example

@@ -1,0 +1,15 @@
+[package]
+name = "sdkwork-drama-database-host"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sdkwork-database-config = { workspace = true }
+sdkwork-database-sqlx = { workspace = true }
+sdkwork-database-spi = { workspace = true }
+sdkwork-database-lifecycle = { workspace = true }
+sdkwork-database-id = { workspace = true }
+sqlx = { workspace = true }
+tracing = { workspace = true }

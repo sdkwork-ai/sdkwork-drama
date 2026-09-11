@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-drama",
+    "displayName": "SDKWork Drama",
+    "version": "0.1.0",
+    "type": "rust-application",
+    "root": ".",
+    "domain": "drama",
+    "capability": "episode-creation",
+    "surface": "backend",
+    "languages": [
+      "rust"
+    ],
+    "generated": false,
+    "manifests": [
+      "Cargo.toml",
+      "sdkwork.app.config.json",
+      "sdkwork.workflow.json"
+    ]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "CODE_STYLE_SPEC.md",
+      "path": "../../sdkwork-specs/CODE_STYLE_SPEC.md",
+      "purpose": "Authored source code style authority."
+    },
+    {
+      "file": "NAMING_SPEC.md",
+      "path": "../../sdkwork-specs/NAMING_SPEC.md",
+      "purpose": "Crate, module, and handler naming authority."
+    },
+    {
+      "file": "RUST_CODE_SPEC.md",
+      "path": "../../sdkwork-specs/RUST_CODE_SPEC.md",
+      "purpose": "Rust language spec for declared languages."
+    },
+    {
+      "file": "COMPOSABLE_ARCHITECTURE_SPEC.md",
+      "path": "../../sdkwork-specs/COMPOSABLE_ARCHITECTURE_SPEC.md",
+      "purpose": "Layered crate composition and dependency direction."
+    },
+    {
+      "file": "API_SPEC.md",
+      "path": "../../sdkwork-specs/API_SPEC.md",
+      "purpose": "App-api wire envelope and operation matrix authority."
+    },
+    {
+      "file": "WEB_BACKEND_SPEC.md",
+      "path": "../../sdkwork-specs/WEB_BACKEND_SPEC.md",
+      "purpose": "Route crate layout, path ownership, health endpoints."
+    },
+    {
+      "file": "DATABASE_SPEC.md",
+      "path": "../../sdkwork-specs/DATABASE_SPEC.md",
+      "purpose": "Database lifecycle assets and framework authority."
+    },
+    {
+      "file": "SUBJECT_ID_SPEC.md",
+      "path": "../../sdkwork-specs/SUBJECT_ID_SPEC.md",
+      "purpose": "Snowflake identity and tenant/user subject columns."
+    },
+    {
+      "file": "PAGINATION_SPEC.md",
+      "path": "../../sdkwork-specs/PAGINATION_SPEC.md",
+      "purpose": "Cursor listing protocol."
+    },
+    {
+      "file": "IAM_SPEC.md",
+      "path": "../../sdkwork-specs/IAM_SPEC.md",
+      "purpose": "Dual-token app-api protection."
+    }
+  ],
+  "contracts": {
+    "layerRole": "runtime-composition",
+    "publicExports": [
+      "crates/sdkwork-api-drama-assembly#app_router",
+      "crates/sdkwork-api-drama-standalone-gateway#main"
+    ],
+    "providedPorts": [
+      {
+        "name": "dramaAppApi",
+        "export": "crates/sdkwork-routes-drama-app-api#router"
+      }
+    ],
+    "requiredPorts": [
+      {
+        "name": "webFramework",
+        "export": "crates/sdkwork-api-drama-assembly#app_router",
+        "provider": "sdkwork-web-framework"
+      },
+      {
+        "name": "iamWebAdapter",
+        "export": "crates/sdkwork-api-drama-assembly#app_router",
+        "provider": "sdkwork-iam-web-adapter"
+      },
+      {
+        "name": "databaseFramework",
+        "export": "crates/sdkwork-drama-database-host#bootstrap_drama_database_from_env",
+        "provider": "sdkwork-database"
+      },
+      {
+        "name": "mediaStorage",
+        "export": "crates/sdkwork-drama-media-drive#bootstrap_drive_storage",
+        "provider": "sdkwork-drive"
+      }
+    ],
+    "runtimeEntrypoints": [
+      "crates/sdkwork-api-drama-standalone-gateway/src/main.rs"
+    ],
+    "routeManifest": "crates/sdkwork-routes-drama-app-api#route_manifest",
+    "sdkClients": [
+      "@sdkwork/drama-app-sdk"
+    ],
+    "sdkDependencies": [],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [
+      "app-api"
+    ],
+    "events": [],
+    "configKeys": [
+      "SDKWORK_DATABASE_URL",
+      "SDKWORK_DATABASE_SCHEMA",
+      "SDKWORK_DATABASE_AUTO_MIGRATE",
+      "SDKWORK_DRAMA_HTTP_BIND",
+      "SDKWORK_DRAMA_APP_ROOT",
+      "SDKWORK_WEB_STORE_APP_ROOT",
+      "SDKWORK_ENV"
+    ]
+  },
+  "verification": {
+    "commands": [
+      "cargo fmt -p sdkwork-routes-drama-app-api -p sdkwork-drama-episode-service -p sdkwork-drama-episode-repository-sqlx -p sdkwork-drama-media-service -p sdkwork-drama-media-drive -p sdkwork-drama-media-repository-sqlx -p sdkwork-drama-database-host -p sdkwork-api-drama-assembly -p sdkwork-api-drama-standalone-gateway -- --check",
+      "cargo clippy --workspace --all-targets -- -D warnings",
+      "cargo test --workspace",
+      "cargo build --workspace",
+      "node ../sdkwork-specs/tools/audit-repository-baseline.mjs --root .",
+      "node ../sdkwork-specs/tools/check-agent-workflow-standard.mjs --root .",
+      "node ../sdkwork-specs/tools/check-repository-docs-standard.mjs --root .",
+      "node ../sdkwork-specs/tools/check-pagination.mjs --root .",
+      "pnpm --filter @sdkwork/drama-app-sdk-generated-typescript run build",
+      "node sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi/bin/publish-core.mjs --language typescript --project-dir sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript/generated/server-openapi --action check"
+    ]
+  }
+}

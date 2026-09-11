@@ -1,0 +1,32 @@
+[package]
+name = "sdkwork-api-drama-assembly"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sdkwork-routes-drama-app-api = { workspace = true }
+sdkwork-drama-episode-service = { workspace = true }
+sdkwork-drama-episode-repository-sqlx = { workspace = true }
+sdkwork-drama-media-service = { workspace = true }
+sdkwork-drama-media-drive = { workspace = true }
+sdkwork-drama-media-repository-sqlx = { workspace = true }
+sdkwork-drama-database-host = { workspace = true }
+sdkwork-iam-web-adapter = { workspace = true }
+sdkwork-web-bootstrap = { workspace = true }
+sdkwork-web-core = { workspace = true }
+sdkwork-web-axum = { workspace = true }
+sdkwork-web-store-sqlx = { workspace = true }
+sdkwork-webstore-database-host = { workspace = true }
+sdkwork-database-sqlx = { workspace = true }
+sdkwork-utils-rust = { workspace = true }
+axum = { workspace = true }
+sqlx = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+[dev-dependencies]
+tower = { workspace = true }
+tokio = { workspace = true }
+http-body-util = "0.1"

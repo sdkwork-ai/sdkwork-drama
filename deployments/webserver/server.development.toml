@@ -1,0 +1,13 @@
+environment = "development"
+
+[http]
+
+[[http.server]]
+listen = ["80"]
+serverName = ["drama-dev.sdkwork.com", "drama-dev.birdcoder.com", "drama-dev.dtupay.com", "drama-dev.noaper.com", "drama-dev.sdkwork.cn", "drama-dev.birdcoder.cn", "drama-dev.dtupay.cn", "drama-dev.noaper.cn", "drama-dev.skubc.com", "drama-dev.skubc.cn", "drama-dev.zowalk.com", "drama-dev.zowalk.cn", "drama-dev.offer86.com", "drama-dev.offer86.cn", "drama-dev.86offer.com", "drama-dev.86offer.cn"]
+include = ["snippets/adaptive-web.named-locations.conf", "snippets/gateway-api-locations.nonproduction.conf"]
+
+[[http.server.location]]
+match = "/"
+include = ["snippets/adaptive-web.dispatch.conf"]
+
