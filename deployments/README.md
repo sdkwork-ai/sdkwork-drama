@@ -17,7 +17,7 @@ Related specs: `../sdkwork-specs/DEPLOYMENT_SPEC.md`, `../sdkwork-specs/ENVIRONM
 | `cloud/Dockerfile` | `cloud` | Single cloud container image for the standalone gateway binary |
 
 Release packaging (tar.gz for `standalone` server and `cloud` container
-targets) is defined by `sdkwork.workflow.json` and the thin packaging
+targets) is defined by `agent.workflow.json` and the thin packaging
 workflow `.github/workflows/package.yml`.
 
 ## Smoke Test

@@ -20,7 +20,7 @@ Related specs: `../sdkwork-specs/SOURCE_CONFIG_SPEC.md`, `../sdkwork-specs/CONFI
 ## Supported Profile Matrix
 
 Drama declares a reduced matrix; its release contracts in
-`sdkwork.workflow.json` package only these combinations. Selecting an
+`agent.workflow.json` package only these combinations. Selecting an
 undeclared profile fails closed.
 
 | Profile | File | Purpose |
