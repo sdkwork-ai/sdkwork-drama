@@ -4,7 +4,7 @@ Purpose: deployment assets for the `drama` application — Dockerfiles, compose 
 
 Owner: sdkwork-drama maintainers.
 
-Allowed: deployment profiles aligned with `sdkwork.app.config.json` (`supportedDeploymentProfiles: ["standalone", "cloud"]`), environment-specific composition referencing `etc/` values.
+Allowed: deployment profiles aligned with `agent.app.config.json` (`supportedDeploymentProfiles: ["standalone", "cloud"]`), environment-specific composition referencing `etc/` values.
 
 Forbidden: secrets baked into images, per-environment image forks (single image + environment-specific configuration), untracked large artifacts.
 

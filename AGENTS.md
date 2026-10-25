@@ -21,7 +21,7 @@ If `../sdkwork-specs/` cannot be resolved from a standalone checkout, stop and r
 
 ## Application Identity
 
-Read `sdkwork.app.config.json` for application identity, registration, SDK/API inventory, release metadata, or app-owned capabilities. Read `etc/` for concrete environment, runtime, Base URL, bind, topology, and deployment values. Do not treat the app manifest as runtime configuration authority.
+Read `agent.app.config.json` for application identity, registration, SDK/API inventory, release metadata, or app-owned capabilities. Read `etc/` for concrete environment, runtime, Base URL, bind, topology, and deployment values. Do not treat the app manifest as runtime configuration authority.
 
 - Application code: `drama` (short-drama video creation application)
 - Domain: `drama`; capability family: episode creation, publishing, playback
@@ -31,7 +31,7 @@ Read `sdkwork.app.config.json` for application identity, registration, SDK/API i
 ## Local Dictionary Structure
 
 - `AGENTS.md`: agent execution rules.
-- `sdkwork.app.config.json`: application identity, app metadata, release surfaces, and owned capabilities.
+- `agent.app.config.json`: application identity, app metadata, release surfaces, and owned capabilities.
 - `.sdkwork/`: local skills, plugins, and repository AI workspace metadata.
 - `apis/`: OpenAPI contract authority (`apis/open-api/`), the single source for API truth before route crates and SDK generation.
 - `apps/`: application surfaces (web/desktop/mobile shells); indexed in `apps/README.md`.
@@ -47,7 +47,7 @@ Read `sdkwork.app.config.json` for application identity, registration, SDK/API i
 Resolve standards in this order:
 
 1. Current or nearest `AGENTS.md`.
-2. `sdkwork.app.config.json` when present.
+2. `agent.app.config.json` when present.
 3. Nearest module `specs/README.md` and `specs/component.spec.json` when the task touches an authored module.
 4. Repository root `specs/` when the task is repository-wide.
 5. Local `.sdkwork/README.md`, `.sdkwork/skills/`, and `.sdkwork/plugins/` when relevant.

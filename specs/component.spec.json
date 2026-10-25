@@ -16,7 +16,7 @@
     "generated": false,
     "manifests": [
       "Cargo.toml",
-      "sdkwork.app.config.json",
+      "agent.app.config.json",
       "sdkwork.workflow.json"
     ]
   },
