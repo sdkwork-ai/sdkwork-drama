@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { resolveRuntimeApiBaseUrl, sessionTokenManager } from '../composition/sessionRuntime';
 import { IamAccountStore } from './account-store';
 import {
   createIamAccountService,
@@ -28,28 +27,14 @@ const UNAVAILABLE: IamAccountSnapshot = {
   reason: 'IAM runtime endpoint is not configured.',
 };
 
-const tenantId = (import.meta.env.VITE_SDKWORK_TENANT_ID ?? '').trim();
-const organizationId = (import.meta.env.VITE_SDKWORK_ORGANIZATION_ID ?? '').trim();
 const store = new IamAccountStore();
 
 /**
- * Create the IAM service from the runtime base resolved after the browser
- * runtime document has been loaded. The service is app-owned composition; no
- * raw HTTP client is constructed in UI code.
+ * Account hook over an injected IAM service. The service is constructed by the
+ * composition root with the shared token manager; this hook owns view state and
+ * cross-tab session snapshots only.
  */
-function createRuntimeService(): IamAccountService | null {
-  const baseUrl = resolveRuntimeApiBaseUrl();
-  if (baseUrl.length === 0) return null;
-  return createIamAccountService({
-    baseUrl,
-    tokenManager: sessionTokenManager,
-    ...(tenantId ? { tenantId } : {}),
-    ...(organizationId ? { organizationId } : {}),
-  });
-}
-
-export function useIamAccount(): UseIamAccount {
-  const [service] = useState<IamAccountService | null>(createRuntimeService);
+export function useIamAccount(service: IamAccountService | null): UseIamAccount {
   const [snapshot, setSnapshot] = useState<IamAccountSnapshot>(
     service ? { status: 'anonymous' } : UNAVAILABLE,
   );

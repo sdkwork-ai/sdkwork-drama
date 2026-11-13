@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { AppErrorBoundary } from './appbase/AppErrorBoundary';
 import { describeRuntime, loadAppRuntimeEnvironment } from './appbase/runtime';
+import { createAppRuntime } from './composition/runtimeServices';
 import './index.css';
 
 function resolveContainer(): HTMLElement {
@@ -17,15 +18,16 @@ function resolveContainer(): HTMLElement {
 async function bootstrap(): Promise<void> {
   const container = resolveContainer();
   // Resolve and publish the browser runtime document before the first SDK call.
-  const runtime = await loadAppRuntimeEnvironment();
+  const runtimeEnv = await loadAppRuntimeEnvironment();
+  const runtime = createAppRuntime();
   if (import.meta.env.DEV) {
-    console.info(`[sdkwork] ${describeRuntime(runtime)}`);
+    console.info(`[sdkwork] ${describeRuntime(runtimeEnv)}`);
   }
 
   createRoot(container).render(
     <StrictMode>
       <AppErrorBoundary>
-        <App />
+        <App runtime={runtime} />
       </AppErrorBoundary>
     </StrictMode>,
   );

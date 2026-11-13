@@ -92,6 +92,7 @@
   "verification": {
     "commands": [
       "pnpm --dir apps/sdkwork-drama-h5 typecheck",
+      "pnpm --dir apps/sdkwork-drama-h5 run test",
       "pnpm --dir apps/sdkwork-drama-h5 run build:prod",
       "node ../sdkwork-specs/tools/check-browser-runtime-env-standard.mjs --root ."
     ]
