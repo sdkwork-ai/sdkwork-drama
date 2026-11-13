@@ -60,9 +60,11 @@
     "_sdkwork:verify": "pnpm run test",
     "stop": "pnpm exec sdkwork-app stop",
     "_sdkwork:build": "cargo build --workspace --release && pnpm --dir apps/sdkwork-drama-pc run build:prod && pnpm --dir apps/sdkwork-drama-h5 run build:prod",
-    "_sdkwork:check": "pnpm run db:validate && pnpm run sdk:check && pnpm run check:browser-build-scripts && pnpm run check:browser-runtime-env && pnpm run check:topology-deployment && pnpm run check:adaptive-web && pnpm run topology:validate && pnpm --dir apps/sdkwork-drama-pc run typecheck && pnpm --dir apps/sdkwork-drama-h5 run typecheck && cargo check --workspace",
+    "_sdkwork:check": "pnpm run db:validate && pnpm run sdk:check && pnpm run check:browser-build-scripts && pnpm run check:browser-runtime-env && pnpm run check:topology-deployment && pnpm run check:adaptive-web && pnpm run check:mini-program && pnpm run topology:validate && pnpm --dir apps/sdkwork-drama-pc run typecheck && pnpm --dir apps/sdkwork-drama-h5 run typecheck && cargo check --workspace",
     "api:assembly:materialize": "node ../sdkwork-specs/tools/materialize-api-assembly.mjs --root .",
-    "api:assembly:validate": "node ../sdkwork-specs/tools/validate-api-assembly.mjs --root ."
+    "api:assembly:validate": "node ../sdkwork-specs/tools/validate-api-assembly.mjs --root .",
+    "check:flutter": "pnpm --dir apps/sdkwork-drama-flutter-mobile run analyze",
+    "check:mini-program": "pnpm --dir apps/sdkwork-drama-mini-program run typecheck"
   },
   "devDependencies": {
     "@sdkwork/app-topology": "workspace:*",

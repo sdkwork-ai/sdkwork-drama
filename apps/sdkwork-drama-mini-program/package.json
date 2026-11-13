@@ -1,0 +1,19 @@
+{
+  "name": "sdkwork-drama-mini-program",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WeChat mini-program surface for SDKWork Drama.",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  },
+  "sdkwork": {
+    "kind": "mini-program",
+    "architecture": "mini-program",
+    "componentType": "mini-program-app",
+    "architectureSpec": "MINI_PROGRAM_APP_ARCHITECTURE_SPEC.md"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.scaffold.architecture-integration",
+  "architecture": "mini-program",
+  "title": "Mini Program",
+  "kindName": "mini-program",
+  "language": "typescript",
+  "runtime": {
+    "family": "mini-program",
+    "framework": "weixin-mini-program",
+    "defaultPlatform": "MP_WEIXIN",
+    "defaultArchitecture": "universal"
+  },
+  "components": [
+    {
+      "id": "iam",
+      "title": "IAM & Session",
+      "supported": true,
+      "mode": "linked",
+      "language": "typescript",
+      "packageName": "@sdkwork/iam-app-sdk",
+      "sdkPath": "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript",
+      "reason": null
+    },
+    {
+      "id": "appbase",
+      "title": "Appbase Foundation",
+      "supported": false,
+      "mode": "runtime-unavailable",
+      "language": null,
+      "packageName": null,
+      "sdkPath": null,
+      "reason": "No runtime package is declared for mini-program"
+    }
+  ]
+}

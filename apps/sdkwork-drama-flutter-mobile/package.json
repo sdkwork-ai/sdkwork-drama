@@ -1,0 +1,17 @@
+{
+  "name": "sdkwork-drama-flutter-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Flutter mobile surface for SDKWork Drama.",
+  "scripts": {
+    "analyze": "flutter analyze",
+    "test": "flutter test",
+    "pub:get": "flutter pub get"
+  },
+  "sdkwork": {
+    "kind": "flutter",
+    "architecture": "flutter",
+    "componentType": "flutter-app",
+    "architectureSpec": "FLUTTER_APP_MOBILE_ARCHITECTURE_SPEC.md"
+  }
+}

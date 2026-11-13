@@ -20,5 +20,7 @@ The repository root is not a runnable primary app surface: it is the application
 | --- | --- | --- |
 | PC browser | `apps/sdkwork-drama-pc` | Initialized (IAM + appbase, adaptive web `pc-web`) |
 | H5 browser | `apps/sdkwork-drama-h5` | Initialized (IAM + appbase, adaptive web `h5`) |
+| Flutter mobile | `apps/sdkwork-drama-flutter-mobile` | Initialized (IAM + appbase; Flutter toolchain owns build) |
+| WeChat mini program | `apps/sdkwork-drama-mini-program` | Initialized (IAM + appbase; WeChat DevTools owns projection/build) |
 
-Both browser roots are served through one adaptive dev ingress (`apps/sdkwork-drama-pc` is the client-process root; the H5 renderer lives in its own root). Runtime documents and build artifacts follow `BROWSER_RUNTIME_ENV_SPEC.md` and `APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md` §2.1.
+Both browser roots are served through one adaptive dev ingress (`apps/sdkwork-drama-pc` is the client-process root; the H5 renderer lives in its own root). Runtime documents and build artifacts follow `BROWSER_RUNTIME_ENV_SPEC.md` and `APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md` §2.1. The Flutter and mini-program roots carry their native manifests and are verified with `flutter analyze` / `tsc --noEmit`; their signed release packaging remains platform tooling.

@@ -1,0 +1,175 @@
+<view class="page">
+  <view class="topbar">
+    <text class="app-name">{{appName}}</text>
+    <text class="surface-chip">小程序</text>
+  </view>
+
+  <block wx:if="{{activeTab === 'overview'}}">
+    <text class="eyebrow">SDKWORK APPLICATION FOUNDATION</text>
+    <text class="title">{{appName}}</text>
+    <text class="lede">Short-drama (短剧) video creation application: episode authoring, media assets, publishing, and playback.</text>
+
+    <view class="stats">
+      <view class="stat">
+        <text class="stat-label">Architectures</text>
+        <text class="stat-value">{{surfaces.length}}</text>
+      </view>
+      <view class="stat">
+        <text class="stat-label">Linked</text>
+        <text class="stat-value">{{linkedCount}}</text>
+      </view>
+      <view class="stat">
+        <text class="stat-label">Plan</text>
+        <text class="stat-value">{{plannedCount}}</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <text class="card-title">Foundation status</text>
+      <text class="card-subtitle">The initial delivery boundary is visible and explicit.</text>
+
+      <view class="status-row">
+        <view class="status-copy">
+          <text class="row-title">Repository baseline</text>
+          <text class="row-detail">Canon, identity, workspace metadata, and root layout</text>
+        </view>
+        <text class="badge ok">Ready</text>
+      </view>
+      <view class="status-row">
+        <view class="status-copy">
+          <text class="row-title">Architecture surface</text>
+          <text class="row-detail">Mini-program TypeScript root with bottom tabs</text>
+        </view>
+        <text class="badge ok">Ready</text>
+      </view>
+      <view class="status-row">
+        <view class="status-copy">
+          <text class="row-title">First vertical workflow</text>
+          <text class="row-detail">Requirements, API contracts, and package modules</text>
+        </view>
+        <text class="badge warn">Next</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:elif="{{activeTab === 'surfaces'}}">
+    <text class="eyebrow">ARCHITECTURE ROOTS</text>
+    <text class="title">Application surfaces</text>
+    <text class="lede">Each architecture keeps its own root, manifest, and toolchain.</text>
+
+    <view class="card">
+      <view wx:for="{{surfaces}}" wx:key="id" class="surface-row">
+        <text class="surface-mark">{{item.mark}}</text>
+        <view class="surface-copy">
+          <text class="row-title">{{item.title}}</text>
+          <text class="row-detail">{{item.root}}</text>
+        </view>
+        <text class="surface-kind">{{item.kind}}</text>
+      </view>
+    </view>
+  </block>
+
+  <block wx:elif="{{activeTab === 'components'}}">
+    <text class="eyebrow">COMPOSITION</text>
+    <text class="title">Component composition</text>
+    <text class="lede">{{linkedCount}} linked · {{plannedCount}} planned · resolved from sibling SDK manifests.</text>
+
+    <view class="card">
+      <view wx:if="{{components.length === 0}}" class="empty">No common component is enabled for this application.</view>
+      <view wx:for="{{components}}" wx:key="id" class="component-row">
+        <text class="component-mark">{{item.mark}}</text>
+        <view class="component-copy">
+          <text class="row-title">{{item.title}}</text>
+          <text class="row-detail">{{item.supported ? item.sdkPackage : item.reason}}</text>
+        </view>
+        <text class="badge {{item.supported ? 'ok' : 'warn'}}">{{item.supported ? 'Linked' : 'Plan'}}</text>
+      </view>
+    </view>
+
+    <view class="callout">
+      <text class="eyebrow">RECOMMENDED NEXT MOVE</text>
+      <text class="callout-title">Write the requirement before the screen.</text>
+      <text class="callout-body">Capture the first workflow in docs/product/prd/PRD.md, record the boundary decision, then add API, SDK, and package work.</text>
+    </view>
+  </block>
+
+  <block wx:else>
+    <text class="eyebrow">IDENTITY &amp; SESSION</text>
+    <text class="title">My account</text>
+    <text class="lede">Identity, session, and account security through sdkwork-iam.</text>
+
+    <view class="card">
+      <view class="account-identity">
+        <text class="account-avatar">D</text>
+        <view class="account-copy">
+          <text class="row-title">{{iamLinked ? 'IAM integration ready' : 'IAM is not selected'}}</text>
+          <text class="row-detail">{{iamLinked ? 'Connect the IAM runtime with a base URL and the global token manager to load the signed-in profile.' : 'Select the iam component to enable account, session, and security capabilities.'}}</text>
+        </view>
+        <text class="badge {{iamLinked ? 'ok' : 'warn'}}">{{iamLinked ? 'Linked' : 'Plan'}}</text>
+      </view>
+
+      <view class="account-facts">
+        <view class="fact">
+          <text class="stat-label">Application</text>
+          <text class="fact-value">{{appCode}}</text>
+        </view>
+        <view class="fact">
+          <text class="stat-label">IAM package</text>
+          <text class="fact-value">{{iamPackage || '—'}}</text>
+        </view>
+        <view class="fact">
+          <text class="stat-label">Tenant</text>
+          <text class="fact-value">Loaded at runtime</text>
+        </view>
+        <view class="fact">
+          <text class="stat-label">Session</text>
+          <text class="fact-value">Global token manager</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="capability">
+        <text class="row-title">Profile</text>
+        <text class="row-detail">Display name, email, phone</text>
+        <text class="source">iam.users.current</text>
+      </view>
+      <view class="capability">
+        <text class="row-title">Session</text>
+        <text class="row-detail">Retrieve and revoke the current session</text>
+        <text class="source">auth.sessions.current</text>
+      </view>
+      <view class="capability">
+        <text class="row-title">Security</text>
+        <text class="row-detail">Password and binding changes</text>
+        <text class="source">iam.users.current</text>
+      </view>
+      <view class="capability">
+        <text class="row-title">Preferences</text>
+        <text class="row-detail">Locale, theme, and notification defaults</text>
+        <text class="source">config/components</text>
+      </view>
+    </view>
+  </block>
+
+  <text class="footer">{{appCode}} · 小程序</text>
+
+  <view class="tabbar">
+    <view class="tab-item {{activeTab === 'overview' ? 'active' : ''}}" data-tab="overview" bindtap="switchTab">
+      <text class="tab-icon">◫</text>
+      <text class="tab-label">Overview</text>
+    </view>
+    <view class="tab-item {{activeTab === 'surfaces' ? 'active' : ''}}" data-tab="surfaces" bindtap="switchTab">
+      <text class="tab-icon">▤</text>
+      <text class="tab-label">Surfaces</text>
+    </view>
+    <view class="tab-item {{activeTab === 'components' ? 'active' : ''}}" data-tab="components" bindtap="switchTab">
+      <text class="tab-icon">◇</text>
+      <text class="tab-label">Components</text>
+    </view>
+    <view class="tab-item {{activeTab === 'me' ? 'active' : ''}}" data-tab="me" bindtap="switchTab">
+      <text class="tab-icon">◎</text>
+      <text class="tab-label">Me</text>
+    </view>
+  </view>
+</view>

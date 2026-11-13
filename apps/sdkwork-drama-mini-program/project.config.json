@@ -1,0 +1,18 @@
+{
+  "appid": "wx0000000000000000",
+  "projectname": "sdkwork-drama-mini-program",
+  "compileType": "miniprogram",
+  "libVersion": "3.5.5",
+  "miniprogramRoot": "src/",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "packNpmManually": false,
+    "ignoreDevUnusedFiles": true,
+    "ignoreUploadUnusedFiles": true
+  },
+  "description": "Short-drama (短剧) video creation application: episode authoring, media assets, publishing, and playback."
+}

@@ -1,0 +1,9 @@
+{
+  "desc": "SDKWork application sitemap",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

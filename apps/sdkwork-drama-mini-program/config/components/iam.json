@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.integration",
+  "component": "iam",
+  "title": "IAM & Session",
+  "enabled": true,
+  "sdk": {
+    "family": "sdkwork-iam-app-sdk",
+    "apiSurface": "app",
+    "credentialMode": "authenticated-app-api",
+    "package": "@sdkwork/iam-app-sdk"
+  },
+  "permissions": [],
+  "config": {
+    "loginMode": "embedded",
+    "sessionPersistence": "secure-storage",
+    "refreshSession": true,
+    "socialLogin": {
+      "enabledProviders": [
+        "apple",
+        "google",
+        "meta",
+        "github",
+        "x",
+        "wechat"
+      ],
+      "providerLabels": {
+        "apple": "Apple",
+        "google": "Google",
+        "meta": "Meta",
+        "github": "GitHub",
+        "x": "X",
+        "wechat": "WeChat"
+      },
+      "redirectUri": "sdkwork://oauth/callback"
+    }
+  },
+  "runtime": {
+    "architecture": "mini-program",
+    "mode": "linked",
+    "supported": true,
+    "reason": null
+  }
+}

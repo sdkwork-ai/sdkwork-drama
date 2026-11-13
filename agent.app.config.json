@@ -44,11 +44,16 @@
     "defaultArchitecture": "x64",
     "clientArchitectures": [
       "pc-web",
-      "h5"
+      "h5",
+      "flutter",
+      "mini-program"
     ],
     "targetPlatforms": [
       "web",
-      "h5"
+      "h5",
+      "ios",
+      "android",
+      "mp-weixin"
     ],
     "supportedDeploymentProfiles": [
       "standalone",
@@ -93,11 +98,17 @@
     "status": "DRAFT",
     "platforms": [
       "WEB",
-      "H5"
+      "H5",
+      "APP_IOS",
+      "APP_ANDROID",
+      "MP_WEIXIN"
     ],
     "installPlatforms": [
       "WEB",
-      "H5"
+      "H5",
+      "APP_IOS",
+      "APP_ANDROID",
+      "MP_WEIXIN"
     ],
     "stores": []
   },
@@ -151,7 +162,9 @@
       "generatedAt": "2026-11-13T05:49:57.205Z",
       "architectures": [
         "pc",
-        "h5"
+        "h5",
+        "flutter",
+        "mini-program"
       ],
       "components": [
         "iam",

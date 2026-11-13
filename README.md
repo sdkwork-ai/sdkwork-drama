@@ -63,6 +63,8 @@ node ../sdkwork-specs/tools/audit-repository-baseline.mjs --root .
 | --- | --- | --- |
 | PC | `apps/sdkwork-drama-pc` | `SDKWORK_DRAMA_WEB_DEV_INGRESS_BIND` (proxies to `apps/sdkwork-drama-pc` renderer) |
 | H5 | `apps/sdkwork-drama-h5` | same ingress, `h5` renderer selected by device class |
+| Flutter | `apps/sdkwork-drama-flutter-mobile` | Flutter toolchain (`flutter run`); not part of the browser ingress |
+| WeChat mini program | `apps/sdkwork-drama-mini-program` | WeChat DevTools (`miniprogramRoot: src/`); projection is platform tooling |
 
 Both roots consume the generated SDK families through app-owned composition and publish their runtime document to `globalThis.SDKWORK_RUNTIME_ENV` (`BROWSER_RUNTIME_ENV_SPEC.md`). Device selection and renderer fallback are owned by `@sdkwork/app-topology` (`APP_RUNTIME_TOPOLOGY_SPEC.md` §8.2). See [`apps/README.md`](apps/README.md) for the surface index.
 

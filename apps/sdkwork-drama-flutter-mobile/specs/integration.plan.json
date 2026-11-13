@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.scaffold.architecture-integration",
+  "architecture": "flutter",
+  "title": "Flutter",
+  "kindName": "flutter",
+  "language": "dart",
+  "runtime": {
+    "family": "mobile",
+    "framework": "flutter",
+    "defaultPlatform": "APP",
+    "defaultArchitecture": "flutter-mobile"
+  },
+  "components": [
+    {
+      "id": "iam",
+      "title": "IAM & Session",
+      "supported": true,
+      "mode": "linked",
+      "language": "flutter",
+      "packageName": "sdkwork_iam_app_sdk",
+      "sdkPath": "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-flutter/generated/server-openapi",
+      "reason": null
+    },
+    {
+      "id": "appbase",
+      "title": "Appbase Foundation",
+      "supported": true,
+      "mode": "runtime",
+      "language": null,
+      "packageName": null,
+      "sdkPath": null,
+      "reason": null
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+page {
+  background: #f2f5fa;
+  color: #0a1324;
+  font-family: 'Inter', system-ui, -apple-system, "PingFang SC", "Segoe UI", sans-serif;
+}

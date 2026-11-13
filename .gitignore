@@ -10,6 +10,10 @@ out/
 # Dependencies
 node_modules/
 
+# Dart/Flutter local tool workspace (never commit)
+.dart_tool/
+**/.dart_tool/
+
 # Local IDE / editor state
 .idea/
 .vscode/
