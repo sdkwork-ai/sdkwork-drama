@@ -16,3 +16,6 @@ Verification: `node ../sdkwork-specs/tools/check-repository-docs-standard.mjs --
 
 - Product: `product/prd/PRD.md`
 - Architecture: `architecture/tech/TECH_ARCHITECTURE.md`
+- Component integration: `components/README.md`
+- Standard capabilities: `capabilities/ME.md`, `capabilities/RUNTIME.md`, `capabilities/SOCIAL_LOGIN.md`
+- Runbooks: `runbooks/deploy.md`, `runbooks/backup-restore.md`, `runbooks/troubleshooting.md`, `runbooks/log-reference.md`

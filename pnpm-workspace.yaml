@@ -1,4 +1,7 @@
 packages:
+  - "apps/*"
   - "sdks/sdkwork-drama-app-sdk/sdkwork-drama-app-sdk-typescript"
+  - "../sdkwork-app-topology"
   - "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
   - "../sdkwork-utils/packages/sdkwork-utils-typescript"
+  - "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript"

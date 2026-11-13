@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-drama-h5",
+    "displayName": "SDKWork Drama H5",
+    "version": "0.1.0",
+    "type": "h5-app",
+    "root": "apps/sdkwork-drama-h5",
+    "domain": "drama",
+    "capability": "drama",
+    "surface": "app",
+    "languages": [
+      "typescript",
+      "react"
+    ],
+    "generated": false,
+    "manifests": [
+      "package.json"
+    ]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "APPLICATION_SPEC.md",
+      "path": "../../../sdkwork-specs/APPLICATION_SPEC.md",
+      "purpose": "Application composition boundaries."
+    },
+    {
+      "file": "APP_H5_ARCHITECTURE_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_H5_ARCHITECTURE_SPEC.md",
+      "purpose": "Application root architecture."
+    },
+    {
+      "file": "APP_MOBILE_REACT_UI_SPEC.md",
+      "path": "../../../sdkwork-specs/APP_MOBILE_REACT_UI_SPEC.md",
+      "purpose": "UI package and interaction rules."
+    },
+    {
+      "file": "CODE_STYLE_SPEC.md",
+      "path": "../../../sdkwork-specs/CODE_STYLE_SPEC.md",
+      "purpose": "Authored code structure."
+    },
+    {
+      "file": "NAMING_SPEC.md",
+      "path": "../../../sdkwork-specs/NAMING_SPEC.md",
+      "purpose": "Canonical naming."
+    },
+    {
+      "file": "TYPESCRIPT_CODE_SPEC.md",
+      "path": "../../../sdkwork-specs/TYPESCRIPT_CODE_SPEC.md",
+      "purpose": "TypeScript rules."
+    },
+    {
+      "file": "FRONTEND_CODE_SPEC.md",
+      "path": "../../../sdkwork-specs/FRONTEND_CODE_SPEC.md",
+      "purpose": "Frontend implementation rules."
+    }
+  ],
+  "contracts": {
+    "layerRole": "runtime-composition",
+    "publicExports": [
+      "."
+    ],
+    "providedPorts": [],
+    "requiredPorts": [],
+    "runtimeEntrypoints": [
+      "package.json#scripts.dev",
+      "package.json#scripts.build"
+    ],
+    "routeManifest": null,
+    "sdkClients": [],
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-iam-app-sdk",
+        "permissionModuleId": "iam-kernel",
+        "surface": "app-api",
+        "credentialMode": "authenticated-app-api",
+        "packageName": "@sdkwork/iam-app-sdk",
+        "architecture": "h5"
+      }
+    ],
+    "permissionComposition": {},
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [],
+    "events": [],
+    "configKeys": [
+      "package.json#sdkwork",
+      "vite.config.ts",
+      "etc/sdkwork.deployment.config.json"
+    ]
+  },
+  "verification": {
+    "commands": [
+      "pnpm --dir apps/sdkwork-drama-h5 typecheck",
+      "pnpm --dir apps/sdkwork-drama-h5 run build:prod",
+      "node ../sdkwork-specs/tools/check-browser-runtime-env-standard.mjs --root ."
+    ]
+  }
+}

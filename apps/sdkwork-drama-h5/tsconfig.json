@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["vite/client", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@sdkwork/sdk-common": ["node_modules/@sdkwork/sdk-common/src/index.ts"],
+      "@sdkwork/sdk-common/*": ["node_modules/@sdkwork/sdk-common/src/*"],
+      "@sdkwork/utils": ["node_modules/@sdkwork/utils/src/index.ts"],
+      "@sdkwork/utils/*": ["node_modules/@sdkwork/utils/src/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

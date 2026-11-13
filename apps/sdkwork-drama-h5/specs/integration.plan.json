@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.scaffold.architecture-integration",
+  "architecture": "h5",
+  "title": "H5",
+  "kindName": "web",
+  "language": "typescript",
+  "runtime": {
+    "family": "web",
+    "framework": "react",
+    "defaultPlatform": "H5",
+    "defaultArchitecture": "x64"
+  },
+  "components": [
+    {
+      "id": "iam",
+      "title": "IAM & Session",
+      "supported": true,
+      "mode": "linked",
+      "language": "typescript",
+      "packageName": "@sdkwork/iam-app-sdk",
+      "sdkPath": "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript",
+      "reason": null
+    },
+    {
+      "id": "appbase",
+      "title": "Appbase Foundation",
+      "supported": true,
+      "mode": "runtime",
+      "language": null,
+      "packageName": null,
+      "sdkPath": null,
+      "reason": null
+    }
+  ]
+}

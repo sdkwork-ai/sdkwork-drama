@@ -1,0 +1,47 @@
+{
+  "name": "sdkwork-drama-pc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PC surface for SDKWork Drama.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "build:dev": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment dev",
+    "build:test": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment test",
+    "build:staging": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment staging",
+    "build:demo": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment demo",
+    "build:prod": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment prod",
+    "build:dev:cloud": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment dev --deployment-profile cloud",
+    "build:test:cloud": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment test --deployment-profile cloud",
+    "build:staging:cloud": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment staging --deployment-profile cloud",
+    "build:demo:cloud": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment demo --deployment-profile cloud",
+    "build:prod:cloud": "node ../../../sdkwork-specs/tools/build-browser-client.mjs --app-root . --environment prod --deployment-profile cloud"
+  },
+  "dependencies": {
+    "@sdkwork/iam-app-sdk": "workspace:*",
+    "@sdkwork/sdk-common": "workspace:*",
+    "@sdkwork/utils": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0"
+  },
+  "sdkwork": {
+    "kind": "web",
+    "surface": "pc",
+    "architecture": "pc",
+    "clientArchitecture": "pc-web",
+    "componentType": "pc-app",
+    "devPort": 5345,
+    "architectureSpec": "APP_PC_ARCHITECTURE_SPEC.md"
+  }
+}

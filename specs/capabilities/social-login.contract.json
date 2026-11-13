@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.scaffold.social-login-contract",
+  "providerAuthority": "sdkwork-iam",
+  "backend": {
+    "configuration": "IAM provider administration (oauth_providers / oauth_clients)",
+    "discovery": "GET /oauth/providers",
+    "authorization": "POST /oauth/authorization_urls",
+    "callback": "IAM-owned /oauth/callbacks/{providerCode}",
+    "secretsOwner": "sdkwork-iam"
+  },
+  "frontend": {
+    "enabledProviders": [
+      "apple",
+      "google",
+      "meta",
+      "github",
+      "x",
+      "wechat"
+    ],
+    "providerLabels": {
+      "apple": "Apple",
+      "google": "Google",
+      "meta": "Meta",
+      "github": "GitHub",
+      "x": "X",
+      "wechat": "WeChat"
+    },
+    "redirectUri": "sdkwork://oauth/callback",
+    "rendering": "render the intersection of IAM discovery and this local allowlist"
+  },
+  "providers": [
+    {
+      "id": "apple",
+      "label": "Apple",
+      "aliases": [],
+      "enabled": true
+    },
+    {
+      "id": "google",
+      "label": "Google",
+      "aliases": [],
+      "enabled": true
+    },
+    {
+      "id": "meta",
+      "label": "Meta",
+      "aliases": [
+        "facebook"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "aliases": [],
+      "enabled": true
+    },
+    {
+      "id": "x",
+      "label": "X",
+      "aliases": [
+        "twitter"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "wechat",
+      "label": "WeChat",
+      "aliases": [
+        "weixin",
+        "wechat_open"
+      ],
+      "enabled": true
+    }
+  ]
+}

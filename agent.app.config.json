@@ -2,14 +2,24 @@
   "schemaVersion": 3,
   "kind": "agent.app",
   "app": {
+    "key": "sdkwork-drama",
     "code": "drama",
-    "name": "SDKWork Drama",
+    "name": "sdkwork-drama",
+    "displayName": "SDKWork Drama",
     "officialWebsiteUrl": "https://drama.sdkwork.com",
     "description": "Short-drama (短剧) video creation application: episode authoring, media assets, publishing, and playback.",
     "domain": "drama",
-    "ownerTeam": "sdkwork-drama"
+    "ownerTeam": "sdkwork-drama",
+    "appType": "APP_REACT",
+    "identifiers": {
+      "packageName": "com.sdkwork.drama",
+      "bundleId": "com.sdkwork.drama",
+      "desktopAppId": "com.sdkwork.drama",
+      "containerImage": "registry.sdkwork.com/apps/sdkwork-drama"
+    }
   },
   "backend": {
+    "appId": "sdkwork-drama",
     "family": "rust-axum",
     "framework": "rust-axum",
     "entrypoints": {
@@ -28,17 +38,126 @@
     }
   },
   "runtime": {
+    "family": "web",
+    "framework": "react",
+    "defaultPlatform": "WEB",
+    "defaultArchitecture": "x64",
+    "clientArchitectures": [
+      "pc-web",
+      "h5"
+    ],
+    "targetPlatforms": [
+      "web",
+      "h5"
+    ],
     "supportedDeploymentProfiles": [
       "standalone",
       "cloud"
     ],
     "defaultDeploymentProfile": "standalone"
   },
-  "media": {},
-  "publish": {},
-  "artifacts": {},
-  "release": {},
-  "security": {},
-  "devApp": {},
-  "metadata": {}
+  "media": {
+    "icons": {
+      "primary": {
+        "id": "sdkwork-drama-primary-icon",
+        "type": "ICON",
+        "purpose": "PRIMARY",
+        "path": "assets/media/icons/icon-1024.png",
+        "url": "https://cdn.sdkwork.com/apps/sdkwork-drama/assets/icon-1024.png",
+        "platform": "WEB",
+        "locale": "en-US",
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "fileSizeBytes": 25482,
+        "alphaChannel": false,
+        "sortOrder": 0,
+        "enabled": true,
+        "metadata": {
+          "scaffoldIcon": true,
+          "note": "Scaffold-generated geometric icon. Replace with designed brand media before catalog or store publication."
+        }
+      },
+      "platform": []
+    },
+    "screenshots": [],
+    "previews": [],
+    "metadata": {
+      "standard": "sdkwork-app-assets.v1",
+      "assetVersion": "0.1.0",
+      "defaultLocale": "en-US",
+      "generatedPlaceholder": true
+    }
+  },
+  "publish": {
+    "status": "DRAFT",
+    "platforms": [
+      "WEB",
+      "H5"
+    ],
+    "installPlatforms": [
+      "WEB",
+      "H5"
+    ],
+    "stores": []
+  },
+  "artifacts": {
+    "installConfig": {
+      "packages": []
+    }
+  },
+  "release": {
+    "currentVersion": "0.1.0",
+    "latest": {
+      "DEV": "0.1.0",
+      "STABLE": "0.1.0"
+    },
+    "notes": [
+      {
+        "version": "0.1.0",
+        "releaseChannel": "DEV",
+        "title": "SDKWork Drama 0.1.0",
+        "summary": "Initial application baseline with PC/H5 browser surfaces.",
+        "content": "Rust app-api backend, generated TypeScript SDK, and scaffold-initialized PC/H5 browser surfaces integrating IAM and the appbase runtime.",
+        "highlights": [
+          "Standard repository layout and Canon documentation",
+          "PC and H5 React/Vite application shells",
+          "IAM and appbase component integration"
+        ],
+        "packageIds": [],
+        "publishedAt": "2026-11-13T05:49:57.205Z",
+        "current": true,
+        "forceUpdate": false,
+        "minSupportedVersion": "0.1.0",
+        "metadata": {}
+      }
+    ],
+    "defaultChannel": "DEV"
+  },
+  "security": {
+    "checksumRequired": false,
+    "signatureRequired": false,
+    "sbomRequired": false
+  },
+  "devApp": {
+    "enabled": true
+  },
+  "metadata": {
+    "status": "active",
+    "deploymentConfig": "etc/sdkwork.deployment.config.json",
+    "scaffold": {
+      "generator": "sdkwork-scaffold",
+      "version": "1.5.0",
+      "generatedAt": "2026-11-13T05:49:57.205Z",
+      "architectures": [
+        "pc",
+        "h5"
+      ],
+      "components": [
+        "iam",
+        "appbase"
+      ],
+      "primaryArchitecture": "pc"
+    }
+  }
 }

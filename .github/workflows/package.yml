@@ -142,6 +142,10 @@ on:
         description: 'SDKWORK_SDK_COMMONS_REF dependency ref; blank falls back to the repository variable.'
         required: false
         default: ''
+      sdkwork_app_topology_ref:
+        description: 'SDKWORK_APP_TOPOLOGY_REF dependency ref; blank falls back to the repository variable.'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -177,6 +181,7 @@ jobs:
                     "SDKWORK_ID_REF": "${{ github.event.inputs.sdkwork_id_ref || vars.SDKWORK_ID_REF }}",
                     "SDKWORK_UTILS_REF": "${{ github.event.inputs.sdkwork_utils_ref || vars.SDKWORK_UTILS_REF }}",
                     "SDKWORK_WEB_FRAMEWORK_REF": "${{ github.event.inputs.sdkwork_web_framework_ref || vars.SDKWORK_WEB_FRAMEWORK_REF }}",
-                    "SDKWORK_SDK_COMMONS_REF": "${{ github.event.inputs.sdkwork_sdk_commons_ref || vars.SDKWORK_SDK_COMMONS_REF }}"
+                    "SDKWORK_SDK_COMMONS_REF": "${{ github.event.inputs.sdkwork_sdk_commons_ref || vars.SDKWORK_SDK_COMMONS_REF }}",
+                    "SDKWORK_APP_TOPOLOGY_REF": "${{ github.event.inputs.sdkwork_app_topology_ref || vars.SDKWORK_APP_TOPOLOGY_REF }}"
         }
     secrets: inherit

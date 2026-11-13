@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.integration",
+  "component": "appbase",
+  "title": "Appbase Foundation",
+  "enabled": true,
+  "sdk": {
+    "family": null,
+    "apiSurface": null,
+    "credentialMode": null,
+    "package": null
+  },
+  "permissions": [],
+  "config": {
+    "errorRecovery": true,
+    "theme": "system",
+    "featureRegistry": true
+  },
+  "runtime": {
+    "architecture": "h5",
+    "mode": "runtime",
+    "supported": true,
+    "reason": null
+  }
+}

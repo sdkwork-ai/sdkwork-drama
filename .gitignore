@@ -28,6 +28,9 @@ Thumbs.db
 *.log
 tmp/
 
+# Browser runtime documents are materialized per build (BROWSER_RUNTIME_ENV_SPEC)
+**/public/runtime-env.json
+
 # Tracked example templates are never secrets (SDKWork ENVIRONMENT_SPEC)
 !.env.example
 !.env.*.example

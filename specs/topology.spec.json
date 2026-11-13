@@ -45,7 +45,9 @@
     "environment": "SDKWORK_DRAMA_ENVIRONMENT",
     "profileId": "SDKWORK_DRAMA_PROFILE_ID",
     "standaloneGatewayBind": "SDKWORK_DRAMA_APPLICATION_PUBLIC_INGRESS_BIND",
-    "apiGatewayBaseUrl": "SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL"
+    "apiGatewayBaseUrl": "SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL",
+    "clientDeploymentProfile": "VITE_SDKWORK_DRAMA_DEPLOYMENT_PROFILE",
+    "clientApiGatewayBaseUrl": "VITE_SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL"
   },
   "surfaces": {
     "application.public-ingress": {
@@ -54,14 +56,16 @@
         "http"
       ],
       "bindEnv": "SDKWORK_DRAMA_APPLICATION_PUBLIC_INGRESS_BIND",
-      "httpUrlEnv": "SDKWORK_DRAMA_APPLICATION_PUBLIC_HTTP_URL"
+      "httpUrlEnv": "SDKWORK_DRAMA_APPLICATION_PUBLIC_HTTP_URL",
+      "clientHttpEnv": "VITE_SDKWORK_DRAMA_APPLICATION_PUBLIC_HTTP_URL"
     },
     "platform.api-gateway": {
       "connectivityPlane": "platform",
       "protocols": [
         "http"
       ],
-      "httpUrlEnv": "SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL"
+      "httpUrlEnv": "SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL",
+      "clientHttpEnv": "VITE_SDKWORK_DRAMA_PLATFORM_API_GATEWAY_HTTP_URL"
     }
   },
   "cloudPublicHosts": {
@@ -229,6 +233,399 @@
             "api-staging.86offer.cn"
           ]
         }
+      }
+    }
+  },
+  "orchestration": {
+    "profiles": {
+      "standalone.development": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-drama-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          },
+          {
+            "id": "drama-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "bindEnv": "SDKWORK_DRAMA_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "drama-adaptive-web",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "drama-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-drama-pc",
+                "script": "dev",
+                "defaultPort": 5345,
+                "portEnv": "SDKWORK_DRAMA_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-drama-h5",
+                "script": "dev",
+                "defaultPort": 5346,
+                "portEnv": "SDKWORK_DRAMA_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
+        ],
+        "accessEndpoints": [
+          {
+            "id": "drama-web",
+            "kind": "user-interface",
+            "source": {
+              "processId": "drama-browser"
+            },
+            "path": "/",
+            "primary": true,
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ]
+          }
+        ]
+      },
+      "standalone.test": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-drama-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          },
+          {
+            "id": "drama-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "bindEnv": "SDKWORK_DRAMA_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "drama-adaptive-web",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "drama-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-drama-pc",
+                "script": "dev",
+                "defaultPort": 5345,
+                "portEnv": "SDKWORK_DRAMA_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-drama-h5",
+                "script": "dev",
+                "defaultPort": 5346,
+                "portEnv": "SDKWORK_DRAMA_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
+        ],
+        "accessEndpoints": [
+          {
+            "id": "drama-web",
+            "kind": "user-interface",
+            "source": {
+              "processId": "drama-browser"
+            },
+            "path": "/",
+            "primary": true,
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ]
+          }
+        ]
+      },
+      "standalone.staging": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-drama-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
+        ],
+        "browserDeliveries": []
+      },
+      "standalone.demo": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-drama-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
+        ],
+        "browserDeliveries": []
+      },
+      "standalone.production": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-drama-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "drama-adaptive-static",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "gateway-static",
+            "apiSurfaceId": "application.public-ingress",
+            "hostProcessId": "application.public-ingress",
+            "buildOutput": "apps/sdkwork-drama-pc/dist/standalone/prod",
+            "runtimeRootEnv": "SDKWORK_DRAMA_PC_STATIC_ROOT",
+            "mountPath": "/",
+            "spaFallback": "/index.html"
+          }
+        ]
+      },
+      "cloud.development": {
+        "processes": [
+          {
+            "id": "drama-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "bindEnv": "SDKWORK_DRAMA_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress",
+          "platform.api-gateway"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "drama-adaptive-web",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "drama-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-drama-pc",
+                "script": "dev",
+                "defaultPort": 5345,
+                "portEnv": "SDKWORK_DRAMA_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-drama-h5",
+                "script": "dev",
+                "defaultPort": 5346,
+                "portEnv": "SDKWORK_DRAMA_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
+        ],
+        "accessEndpoints": [
+          {
+            "id": "drama-web",
+            "kind": "user-interface",
+            "source": {
+              "processId": "drama-browser"
+            },
+            "path": "/",
+            "primary": true,
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ]
+          }
+        ]
+      },
+      "cloud.test": {
+        "processes": [
+          {
+            "id": "drama-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "bindEnv": "SDKWORK_DRAMA_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress",
+          "platform.api-gateway"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "drama-adaptive-web",
+            "applicationRoot": "apps/sdkwork-drama-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "drama-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-drama-pc",
+                "script": "dev",
+                "defaultPort": 5345,
+                "portEnv": "SDKWORK_DRAMA_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-drama-h5",
+                "script": "dev",
+                "defaultPort": 5346,
+                "portEnv": "SDKWORK_DRAMA_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
+        ],
+        "accessEndpoints": [
+          {
+            "id": "drama-web",
+            "kind": "user-interface",
+            "source": {
+              "processId": "drama-browser"
+            },
+            "path": "/",
+            "primary": true,
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ]
+          }
+        ]
+      },
+      "cloud.staging": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-drama-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress",
+          "platform.api-gateway"
+        ]
+      },
+      "cloud.production": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-drama-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress",
+          "platform.api-gateway"
+        ]
+      },
+      "cloud.demo": {
+        "processes": [],
+        "healthSurfaces": []
       }
     }
   }

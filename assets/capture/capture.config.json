@@ -1,0 +1,68 @@
+{
+  "$schema": "https://sdkwork.com/schemas/sdkwork.app-assets.capture.schema.v1.json",
+  "schemaVersion": 1,
+  "kind": "sdkwork.app-assets.capture",
+  "appKey": "sdkwork-drama",
+  "appVersion": "0.1.0",
+  "surfaces": [
+    {
+      "id": "web-primary",
+      "kind": "ui",
+      "tool": "playwright",
+      "platform": "WEB",
+      "deviceClass": "BROWSER",
+      "displayType": "DESKTOP_16_9",
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "deviceScaleFactor": 1
+      },
+      "locales": [
+        "en-US"
+      ],
+      "routes": [
+        {
+          "id": "app.home",
+          "path": "/"
+        }
+      ],
+      "theme": "light",
+      "readySelector": "[data-sdkwork-app-ready]"
+    },
+    {
+      "id": "h5-primary",
+      "kind": "ui",
+      "tool": "playwright",
+      "platform": "H5",
+      "deviceClass": "MOBILE",
+      "displayType": "H5_9_16",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 3
+      },
+      "locales": [
+        "en-US"
+      ],
+      "routes": [
+        {
+          "id": "app.home",
+          "path": "/"
+        }
+      ],
+      "theme": "light",
+      "readySelector": "[data-sdkwork-app-ready]"
+    }
+  ],
+  "capture": {
+    "tool": "playwright",
+    "command": "node scripts/capture-assets.mjs",
+    "outputRoot": ".sdkwork/tmp/assets-capture",
+    "locales": [
+      "en-US"
+    ],
+    "freezeAnimations": true,
+    "maskSelectors": [],
+    "seed": "app-assets-demo"
+  }
+}

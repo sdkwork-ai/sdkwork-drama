@@ -1,0 +1,4 @@
+capture/raw/
+*.tmp
+.DS_Store
+Thumbs.db
