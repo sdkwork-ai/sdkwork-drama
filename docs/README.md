@@ -15,6 +15,7 @@ Verification: `node ../sdkwork-specs/tools/check-repository-docs-standard.mjs --
 ## Index
 
 - Product: `product/prd/PRD.md`
+- Product parity audit: `product/parity/HONGGUO_PARITY.md`
 - Architecture: `architecture/tech/TECH_ARCHITECTURE.md`
 - Component integration: `components/README.md`
 - Standard capabilities: `capabilities/ME.md`, `capabilities/RUNTIME.md`, `capabilities/SOCIAL_LOGIN.md`
