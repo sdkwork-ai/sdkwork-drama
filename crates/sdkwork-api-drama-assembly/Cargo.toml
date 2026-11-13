@@ -18,6 +18,9 @@ sdkwork-drama-media-drive = { workspace = true }
 sdkwork-drama-media-repository-sqlx = { workspace = true }
 sdkwork-drama-database-host = { workspace = true }
 sdkwork-iam-web-adapter = { workspace = true }
+sdkwork-iam-database-host = { workspace = true }
+sdkwork-iam-embedded-application-bootstrap = { workspace = true }
+sdkwork-routes-iam-app-api = { workspace = true }
 sdkwork-web-bootstrap = { workspace = true }
 sdkwork-web-core = { workspace = true }
 sdkwork-web-axum = { workspace = true }

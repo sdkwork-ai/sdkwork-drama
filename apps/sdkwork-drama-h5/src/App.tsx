@@ -21,7 +21,10 @@ import { useMediaAssets } from './state/use-media-assets';
 
 export default function App({ runtime }: { readonly runtime: AppRuntime }) {
   const account = useIamAccount(runtime.services?.iam ?? null);
-  const episodes = useEpisodes(runtime.services?.episodes ?? null);
+  const episodes = useEpisodes(
+    runtime.services?.episodes ?? null,
+    account.snapshot.status === 'authenticated',
+  );
   const initialParams = new URLSearchParams(window.location.search);
   const initialScreen = initialParams.get('screen');
   const initialTab: TabId = initialScreen === 'episodes' || initialScreen === 'account'
@@ -36,7 +39,11 @@ export default function App({ runtime }: { readonly runtime: AppRuntime }) {
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
 
-  const media = useMediaAssets(runtime.services?.media ?? null, detailId);
+  const media = useMediaAssets(
+    runtime.services?.media ?? null,
+    detailId,
+    account.snapshot.status === 'authenticated',
+  );
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
   const detailEpisode = useMemo(
@@ -59,11 +66,11 @@ export default function App({ runtime }: { readonly runtime: AppRuntime }) {
   }, [tab, detailId, creating]);
 
   useEffect(() => {
-    if (detailId !== null && detailEpisode === null && !episodes.loading) {
+    if (detailId !== null && detailEpisode === null && episodes.loaded && !episodes.loading) {
       setDetailId(null);
       setTab('episodes');
     }
-  }, [detailId, detailEpisode, episodes.loading]);
+  }, [detailId, detailEpisode, episodes.loaded, episodes.loading]);
 
   const tabVisible = !creating && detailId === null;
 

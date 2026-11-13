@@ -7,6 +7,7 @@ import { normalizeProblem, type NormalizedProblem } from '../services/problem';
 export interface EpisodesState {
   readonly items: readonly Episode[];
   readonly loading: boolean;
+  readonly loaded: boolean;
   readonly loadingMore: boolean;
   readonly hasMore: boolean;
   readonly error: NormalizedProblem | null;
@@ -24,17 +25,18 @@ function mergeEpisodes(current: readonly Episode[], incoming: readonly Episode[]
   return [...byId.values()];
 }
 
-export function useEpisodes(service: EpisodeService | null): EpisodesState {
+export function useEpisodes(service: EpisodeService | null, enabled = true): EpisodesState {
   const [items, setItems] = useState<readonly Episode[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(Boolean(service));
+  const [loaded, setLoaded] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<NormalizedProblem | null>(null);
   const requestId = useRef(0);
 
   const loadFirstPage = useCallback(async () => {
-    if (!service) return;
+    if (!service || !enabled) return;
     const id = requestId.current + 1;
     requestId.current = id;
     setLoading(true);
@@ -43,6 +45,7 @@ export function useEpisodes(service: EpisodeService | null): EpisodesState {
       const page = await service.list();
       if (requestId.current !== id) return;
       setItems(page.items);
+      setLoaded(true);
       setNextCursor(page.pageInfo.nextCursor ?? null);
       setHasMore(page.pageInfo.hasMore ?? Boolean(page.pageInfo.nextCursor));
     } catch (failure) {
@@ -50,11 +53,20 @@ export function useEpisodes(service: EpisodeService | null): EpisodesState {
     } finally {
       if (requestId.current === id) setLoading(false);
     }
-  }, [service]);
+  }, [service, enabled]);
 
   useEffect(() => {
+    if (!enabled) {
+      setItems([]);
+      setNextCursor(null);
+      setHasMore(false);
+      setError(null);
+      setLoading(false);
+      setLoaded(false);
+      return;
+    }
     void loadFirstPage();
-  }, [loadFirstPage]);
+  }, [enabled, loadFirstPage]);
 
   const loadMore = useCallback(async () => {
     if (!service || !nextCursor || loadingMore) return;
@@ -88,6 +100,7 @@ export function useEpisodes(service: EpisodeService | null): EpisodesState {
   return {
     items,
     loading,
+    loaded,
     loadingMore,
     hasMore,
     error,

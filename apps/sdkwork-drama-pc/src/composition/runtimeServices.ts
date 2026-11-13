@@ -16,6 +16,12 @@ export interface AppRuntime {
   readonly services: AppServices | null;
 }
 
+function readBootstrapAccessToken(): string {
+  const globalRecord = globalThis as unknown as Record<string, unknown>;
+  const value = globalRecord.__SDKWORK_CREDENTIAL_ENTRY_BOOTSTRAP_ACCESS_TOKEN__;
+  return typeof value === 'string' ? value.trim() : '';
+}
+
 /**
  * Composition root: constructs the generated SDK clients and the services the
  * UI consumes. UI components never construct SDK clients or auth headers.
@@ -30,11 +36,16 @@ export function createAppRuntime(): AppRuntime {
     baseUrl,
     tokenManager: sessionTokenManager,
   });
+  const bootstrapAccessToken = readBootstrapAccessToken();
 
   return {
     baseUrl,
     services: {
-      iam: createIamAccountService({ baseUrl, tokenManager: sessionTokenManager }),
+      iam: createIamAccountService({
+        baseUrl,
+        tokenManager: sessionTokenManager,
+        ...(bootstrapAccessToken ? { accessToken: bootstrapAccessToken } : {}),
+      }),
       episodes: createEpisodeService(dramaClient.episode),
       media: createMediaService(dramaClient.media.episodeAssets),
     },

@@ -157,12 +157,7 @@ async fn live_smoke_full_episode_and_media_flow() {
     .await;
     assert_eq!(status, StatusCode::OK);
     assert_eq!(body["data"]["pageInfo"]["mode"], "cursor");
-    assert!(
-        !body["data"]["items"]
-            .as_array()
-            .expect("items")
-            .is_empty()
-    );
+    assert!(!body["data"]["items"].as_array().expect("items").is_empty());
 
     // 7. Update then publish (idempotent-keyed command).
     let (status, body, _) = serve_request(

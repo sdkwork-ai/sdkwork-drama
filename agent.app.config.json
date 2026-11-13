@@ -28,6 +28,9 @@
     "ownedSurfaces": [
       "app-api"
     ],
+    "accessTokenPermissionScope": [
+      "iam.users.read"
+    ],
     "apiAuthorities": {
       "appApi": "apis/open-api/drama/drama-app-api.openapi.json"
     },

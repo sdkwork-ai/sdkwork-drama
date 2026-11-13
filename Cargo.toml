@@ -55,6 +55,10 @@ sdkwork-webstore-database-host = { path = "../sdkwork-web-framework/crates/sdkwo
 
 # IAM web adapter: dual-token context resolution + authorization for app-api
 sdkwork-iam-web-adapter = { path = "../sdkwork-iam/crates/sdkwork-iam-web-adapter" }
+# Embedded IAM App API: login/session/user routes served by the application ingress
+sdkwork-iam-database-host = { path = "../sdkwork-iam/crates/sdkwork-iam-database-host" }
+sdkwork-iam-embedded-application-bootstrap = { path = "../sdkwork-iam/crates/sdkwork-iam-embedded-application-bootstrap" }
+sdkwork-routes-iam-app-api = { path = "../sdkwork-iam/crates/sdkwork-routes-iam-app-api" }
 
 # Unified database framework (pool, lifecycle, repository infrastructure, id generation)
 sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config" }

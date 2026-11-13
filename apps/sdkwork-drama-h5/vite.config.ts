@@ -1,3 +1,4 @@
+import { createSdkworkCredentialEntryBootstrapVitePlugin } from '@sdkwork/iam-credential-entry/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
@@ -33,6 +34,10 @@ export default defineConfig(({ mode }) => {
   return {
     base: './',
     plugins: [
+      createSdkworkCredentialEntryBootstrapVitePlugin({
+        accessToken: process.env.SDKWORK_ACCESS_TOKEN ?? '',
+        environment: runtimeProfile.environment,
+      }),
       react(),
       createBrowserRuntimeEnvVitePlugin({
         name: 'sdkwork-drama-h5-runtime-env',

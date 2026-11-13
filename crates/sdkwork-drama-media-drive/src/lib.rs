@@ -18,7 +18,7 @@ use async_trait::async_trait;
 use sdkwork_drama_media_service::{
     MediaStorage, MediaStorageError, StoreMediaCommand, StoredMedia,
 };
-use sdkwork_drive_object_runtime::DriveObjectStoreRuntime;
+use sdkwork_drive_object_runtime::{DriveObjectStoreRuntime, ProviderAccessIntent};
 use sdkwork_drive_storage_contract::DriveObjectStore;
 use sdkwork_drive_uploader_service::service::{
     DriveUploaderService, PrepareUploaderUploadCommand, SqlUploaderStore, UploadBytesCommand,
@@ -62,10 +62,11 @@ impl DriveMediaStorage {
 
     async fn resolve_active_object_store(
         &self,
+        tenant_id: &str,
     ) -> Result<std::sync::Arc<dyn DriveObjectStore>, MediaStorageError> {
         let provider_store = SqlStorageProviderStore::new(self.pool.clone());
         let providers = provider_store
-            .list_storage_providers(Some("active"), 0, 1)
+            .list_storage_providers(tenant_id, None, Some("active"), 0, 1)
             .await
             .map_err(|err| MediaStorageError::Storage(drive_error_message(err)))?;
         let provider = providers.first().ok_or_else(|| {
@@ -73,7 +74,7 @@ impl DriveMediaStorage {
         })?;
         let runtime = DriveObjectStoreRuntime::new(self.pool.clone());
         runtime
-            .resolve(&provider.id, provider.version)
+            .resolve(&provider.id, ProviderAccessIntent::Write)
             .await
             .map_err(|err| MediaStorageError::Storage(err.to_string()))
     }
@@ -125,7 +126,9 @@ impl MediaStorage for DriveMediaStorage {
         };
 
         let uploader = DriveUploaderService::new(SqlUploaderStore::new(self.pool.clone()));
-        let object_store = self.resolve_active_object_store().await?;
+        let object_store = self
+            .resolve_active_object_store(&command.tenant_id.to_string())
+            .await?;
         let item = uploader
             .upload_bytes(
                 object_store.as_ref(),
@@ -156,36 +159,114 @@ impl MediaStorage for DriveMediaStorage {
 ///
 /// Cloud deployments provision their own provider records and topology; the
 /// seed here only guarantees a working standalone/dev configuration.
-pub async fn bootstrap_drive_storage(pool: &PgPool) -> Result<(), sqlx::Error> {
-    sdkwork_drive_workspace_service::infrastructure::sql::install_postgres_schema(pool).await?;
-    seed_local_storage_provider_if_absent(pool).await
+pub async fn bootstrap_drive_storage(pool: &PgPool) -> Result<(), String> {
+    sdkwork_drive_workspace_service::infrastructure::sql::install_postgres_schema(pool)
+        .await
+        .map_err(|error| format!("install Drive schema failed: {error}"))?;
+    seed_local_storage_provider_if_absent(pool)
+        .await
+        .map_err(|error| format!("seed local Drive storage provider failed: {error}"))
 }
 
 async fn seed_local_storage_provider_if_absent(pool: &PgPool) -> Result<(), sqlx::Error> {
-    let existing: Option<i64> = sqlx::query_scalar(
-        "SELECT 1::bigint FROM dr_drive_storage_provider WHERE status = 'active'",
+    let tenant_id = std::env::var("SDKWORK_DRAMA_DEFAULT_TENANT_ID")
+        .ok()
+        .map(|value| value.trim().to_string())
+        .filter(|value| !value.is_empty())
+        .unwrap_or_else(|| "100001".to_string());
+
+    // The Drive local filesystem adapter requires an absolute directory URL
+    // (`file:///D:/...`), not the legacy `file://localhost` placeholder.
+    let storage_root = std::env::var("SDKWORK_DRAMA_LOCAL_STORAGE_ROOT")
+        .ok()
+        .map(|value| value.trim().to_string())
+        .filter(|value| !value.is_empty())
+        .map(std::path::PathBuf::from)
+        .unwrap_or_else(|| std::env::temp_dir().join("sdkwork-drama-drive"));
+    std::fs::create_dir_all(&storage_root).map_err(sqlx::Error::Io)?;
+    let endpoint_url = format!(
+        "file:///{}",
+        storage_root.to_string_lossy().replace('\\', "/")
+    );
+
+    let existing: Option<(String, String)> = sqlx::query_as(
+        "SELECT id, endpoint_url FROM dr_drive_storage_provider \
+         WHERE tenant_id = $1 AND status = 'active' LIMIT 1",
     )
+    .bind(&tenant_id)
     .fetch_optional(pool)
     .await?;
-    if existing.is_some() {
+    if let Some((provider_id, current_endpoint)) = existing {
+        if current_endpoint == "file://localhost" {
+            sqlx::query("UPDATE dr_drive_storage_provider SET endpoint_url = $1 WHERE id = $2")
+                .bind(&endpoint_url)
+                .bind(&provider_id)
+                .execute(pool)
+                .await?;
+            tracing::info!(
+                provider_id = %provider_id,
+                endpoint_url = %endpoint_url,
+                "repaired legacy local Drive storage provider endpoint"
+            );
+        }
+        ensure_tenant_provider_binding(pool, &tenant_id, &provider_id).await?;
         return Ok(());
     }
+    let provider_id = format!("{LOCAL_PROVIDER_ID}-{tenant_id}");
     tracing::info!(
-        provider_id = LOCAL_PROVIDER_ID,
+        provider_id = %provider_id,
+        tenant_id = %tenant_id,
+        endpoint_url = %endpoint_url,
         "seeding standalone local drive storage provider"
     );
     sqlx::query(
         "INSERT INTO dr_drive_storage_provider ( \
-                id, provider_kind, name, endpoint_url, region, bucket, path_style, \
+                id, tenant_id, provider_kind, name, endpoint_url, region, bucket, path_style, \
                 strict_tls, credential_ref, server_side_encryption_mode, default_storage_class, \
                 status, version, created_by, updated_by \
             ) VALUES ( \
-                $1, 'local_filesystem', $2, 'file://localhost', 'local', $2, TRUE, TRUE, \
+                $1, $2, 'local_filesystem', $3, $4, 'local', $3, TRUE, TRUE, \
                 'plain:local:local', NULL, NULL, 'active', 1, 'system', 'system' \
             )",
     )
-    .bind(LOCAL_PROVIDER_ID)
+    .bind(&provider_id)
+    .bind(&tenant_id)
     .bind(LOCAL_PROVIDER_BUCKET)
+    .bind(&endpoint_url)
+    .execute(pool)
+    .await?;
+    ensure_tenant_provider_binding(pool, &tenant_id, &provider_id).await?;
+    Ok(())
+}
+
+/// Mount the provider as the tenant's primary storage binding.
+///
+/// The Drive uploader resolves providers through
+/// `dr_drive_storage_provider_binding` (space -> space_type -> tenant); a
+/// provider row alone is not routable (DRIVE_SPEC provider resolution).
+async fn ensure_tenant_provider_binding(
+    pool: &PgPool,
+    tenant_id: &str,
+    provider_id: &str,
+) -> Result<(), sqlx::Error> {
+    let binding_id = format!("binding-{provider_id}-tenant");
+    sqlx::query(
+        "INSERT INTO dr_drive_storage_provider_binding ( \
+                id, tenant_id, space_id, provider_id, binding_scope, purpose, \
+                storage_root_prefix, lifecycle_status, version, created_by, updated_by \
+            ) VALUES ($1, $2, NULL, $3, 'tenant', 'primary', $4, 'active', 1, 'system', 'system') \
+            ON CONFLICT (id) DO UPDATE SET \
+                provider_id = EXCLUDED.provider_id, \
+                lifecycle_status = 'active', \
+                storage_root_prefix = EXCLUDED.storage_root_prefix, \
+                version = dr_drive_storage_provider_binding.version + 1, \
+                updated_by = 'system', \
+                updated_at = NOW()",
+    )
+    .bind(&binding_id)
+    .bind(tenant_id)
+    .bind(provider_id)
+    .bind(format!("tenants/{tenant_id}"))
     .execute(pool)
     .await?;
     Ok(())

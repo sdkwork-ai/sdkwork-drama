@@ -26,6 +26,22 @@ importers:
 
   ../sdkwork-app-topology: {}
 
+  ../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry:
+    dependencies:
+      '@sdkwork/iam-app-sdk':
+        specifier: workspace:*
+        version: link:../../../../sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript
+      '@sdkwork/sdk-common':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-sdk-commons/sdkwork-sdk-common-typescript
+      '@sdkwork/utils':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
   ../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript:
     dependencies:
       '@sdkwork/sdk-common':
@@ -79,6 +95,9 @@ importers:
       '@sdkwork/iam-app-sdk':
         specifier: workspace:*
         version: link:../../../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript
+      '@sdkwork/iam-credential-entry':
+        specifier: workspace:*
+        version: link:../../../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry
       '@sdkwork/sdk-common':
         specifier: workspace:*
         version: link:../../../sdkwork-sdk-commons/sdkwork-sdk-common-typescript
@@ -128,6 +147,9 @@ importers:
       '@sdkwork/iam-app-sdk':
         specifier: workspace:*
         version: link:../../../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript
+      '@sdkwork/iam-credential-entry':
+        specifier: workspace:*
+        version: link:../../../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry
       '@sdkwork/sdk-common':
         specifier: workspace:*
         version: link:../../../sdkwork-sdk-commons/sdkwork-sdk-common-typescript

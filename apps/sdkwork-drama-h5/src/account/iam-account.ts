@@ -6,6 +6,8 @@ export interface IamAccountConfig {
   readonly baseUrl: string;
   readonly tokenManager: AuthTokenManager;
   readonly headers?: Readonly<Record<string, string>>;
+  /** Private development bootstrap Access-Token (credential-entry routes only). */
+  readonly accessToken?: string;
   readonly tenantId?: string;
   readonly organizationId?: string;
 }
@@ -142,16 +144,21 @@ function normalizeAccount(
   profile: Record<string, unknown>,
   session: Record<string, unknown>,
 ): IamAccountProfile {
+  const context = recordOf(session.context) ?? {};
+  const sessionUser = recordOf(session.user) ?? {};
+  const identity = Object.keys(profile).length > 0 ? profile : sessionUser;
   return {
-    id: pickString(profile, ['id', 'userId', 'user_id'])
+    id: pickString(identity, ['id', 'userId', 'user_id'])
       ?? pickString(session, ['userId', 'user_id']),
-    displayName: pickString(profile, ['displayName', 'display_name', 'nickname', 'name']),
-    email: pickString(profile, ['email']),
-    phone: pickString(profile, ['phone', 'mobile']),
-    tenantId: pickString(profile, ['tenantId', 'tenant_id'])
-      ?? pickString(session, ['tenantId', 'tenant_id']),
-    organizationId: pickString(profile, ['organizationId', 'organization_id'])
-      ?? pickString(session, ['organizationId', 'organization_id']),
+    displayName: pickString(identity, ['displayName', 'display_name', 'nickname', 'name']),
+    email: pickString(identity, ['email']),
+    phone: pickString(identity, ['phone', 'mobile']),
+    tenantId: pickString(identity, ['tenantId', 'tenant_id'])
+      ?? pickString(session, ['tenantId', 'tenant_id'])
+      ?? pickString(context, ['tenantId', 'tenant_id']),
+    organizationId: pickString(identity, ['organizationId', 'organization_id'])
+      ?? pickString(session, ['organizationId', 'organization_id'])
+      ?? pickString(context, ['organizationId', 'organization_id']),
     sessionId: pickString(session, ['sessionId', 'session_id', 'id']),
   };
 }
@@ -170,13 +177,29 @@ function reasonOf(error: unknown, fallback: string): string {
 }
 
 export function createIamAccountService(config: IamAccountConfig) {
-  const client = createClient({
+  const baseConfig = {
     baseUrl: config.baseUrl,
-    tokenManager: config.tokenManager,
-    ...(config.headers ? { headers: { ...config.headers } } : {}),
     ...(config.tenantId ? { tenantId: config.tenantId } : {}),
     ...(config.organizationId ? { organizationId: config.organizationId } : {}),
-  });
+  };
+
+  /** Credential-entry login routes: the private development bootstrap token. */
+  function createBootstrapClient() {
+    return createClient({
+      ...baseConfig,
+      ...(config.accessToken ? { accessToken: config.accessToken } : {}),
+      ...(config.headers ? { headers: { ...config.headers } } : {}),
+    });
+  }
+
+  /** Authenticated routes: the shared user session token manager. */
+  function createUserClient() {
+    return createClient({
+      ...baseConfig,
+      tokenManager: config.tokenManager,
+      ...(config.headers ? { headers: { ...config.headers } } : {}),
+    });
+  }
 
   function persistTokens(raw: Record<string, unknown>): AuthTokens | undefined {
     const tokens = extractTokens(raw);
@@ -189,10 +212,10 @@ export function createIamAccountService(config: IamAccountConfig) {
       return { status: 'anonymous' };
     }
     try {
-      const session = await client.auth.sessions.current.retrieve();
+      const session = await createUserClient().auth.sessions.current.retrieve();
       let profile: Record<string, unknown> = {};
       try {
-        profile = await client.iam.users.current.retrieve();
+        profile = await createUserClient().iam.users.current.retrieve();
       } catch {
         // A valid session can exist before the profile projection is readable.
       }
@@ -213,10 +236,18 @@ export function createIamAccountService(config: IamAccountConfig) {
   }
 
   async function login(input: IamPasswordLoginInput): Promise<IamLoginOutcome> {
+    const account = input.account.trim();
+    if (!config.accessToken) {
+      return {
+        status: 'unavailable',
+        reason: 'IAM credential-entry bootstrap token is not configured.',
+      };
+    }
     try {
-      const raw = await client.auth.sessions.create({
+      const raw = await createBootstrapClient().auth.sessions.create({
         grantType: 'password',
-        account: input.account,
+        account,
+        username: account,
         password: input.password,
         ...(input.tenantId ?? config.tenantId ? { tenantId: input.tenantId ?? config.tenantId } : {}),
         ...(input.organizationId ?? config.organizationId
@@ -240,7 +271,7 @@ export function createIamAccountService(config: IamAccountConfig) {
     input: IamOrganizationSelectionInput,
   ): Promise<IamLoginOutcome> {
     try {
-      const raw = await client.auth.sessions.organizationSelection.create({
+      const raw = await createBootstrapClient().auth.sessions.organizationSelection.create({
         continuationToken: input.continuationToken,
         organizationId: input.organizationId,
       });
@@ -260,7 +291,7 @@ export function createIamAccountService(config: IamAccountConfig) {
     input: IamLoginContextSelectionInput,
   ): Promise<IamLoginOutcome> {
     try {
-      const raw = await client.auth.sessions.loginContextSelection.create({
+      const raw = await createBootstrapClient().auth.sessions.loginContextSelection.create({
         continuationToken: input.continuationToken,
         loginScope: input.loginScope,
         ...(input.organizationId ? { organizationId: input.organizationId } : {}),
@@ -283,7 +314,7 @@ export function createIamAccountService(config: IamAccountConfig) {
       return { status: 'unavailable', reason: 'No IAM refresh token is available.' };
     }
     try {
-      const raw = recordOf(await client.auth.sessions.refresh({ refreshToken }));
+      const raw = recordOf(await createUserClient().auth.sessions.refresh({ refreshToken }));
       if (!raw || !persistTokens(raw)) {
         return { status: 'unavailable', reason: 'IAM session refresh returned no tokens.' };
       }
@@ -295,7 +326,9 @@ export function createIamAccountService(config: IamAccountConfig) {
 
   async function signOut(): Promise<void> {
     try {
-      await client.auth.sessions.current.delete();
+      if (config.tokenManager.hasToken()) {
+        await createUserClient().auth.sessions.current.delete();
+      }
     } finally {
       config.tokenManager.clearTokens();
     }

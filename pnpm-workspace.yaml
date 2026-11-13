@@ -5,3 +5,4 @@ packages:
   - "../sdkwork-sdk-commons/sdkwork-sdk-common-typescript"
   - "../sdkwork-utils/packages/sdkwork-utils-typescript"
   - "../sdkwork-iam/sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript"
+  - "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry"

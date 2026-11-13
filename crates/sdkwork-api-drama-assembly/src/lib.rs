@@ -15,6 +15,7 @@
 pub mod health;
 pub mod web_bootstrap;
 
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -31,6 +32,49 @@ use sdkwork_routes_drama_app_api as drama_app_api;
 /// Business handler timeout applied by the web-framework pipeline
 /// (webserver production convention).
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(60);
+
+/// Resolve the repository app root used for embedded IAM tenant registration.
+fn drama_app_root() -> PathBuf {
+    if let Ok(value) = std::env::var("SDKWORK_DRAMA_APP_ROOT") {
+        let trimmed = value.trim();
+        if !trimmed.is_empty() {
+            return PathBuf::from(trimmed);
+        }
+    }
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..")
+}
+
+/// Embed the IAM App API (login, sessions, current user, organization selection)
+/// into the application ingress.
+///
+/// The browser client uses one same-origin `appApiBaseUrl`; IAM routes are
+/// served by this process behind `application.public-ingress` per
+/// `APP_RUNTIME_TOPOLOGY_SPEC.md` "embedded dependency APIs". The IAM router is
+/// merged after the drama web-framework layer so anonymous login routes keep
+/// their own manifest-driven auth policy.
+async fn iam_app_router() -> Result<Router, String> {
+    sdkwork_iam_database_host::bootstrap_iam_database_from_env()
+        .await
+        .map_err(|error| format!("bootstrap IAM database failed: {error}"))?;
+
+    let app_root = drama_app_root();
+    let environment = sdkwork_iam_embedded_application_bootstrap::resolve_bootstrap_environment();
+    sdkwork_iam_embedded_application_bootstrap::ensure_tenant_application_from_app_root(
+        app_root.as_path(),
+        &sdkwork_iam_embedded_application_bootstrap::EmbeddedApplicationBootstrapOptions {
+            environment,
+            ..sdkwork_iam_embedded_application_bootstrap::EmbeddedApplicationBootstrapOptions::default()
+        },
+        None,
+        &[],
+    )
+    .await
+    .map_err(|error| format!("ensure drama IAM tenant application failed: {error}"))?;
+
+    sdkwork_routes_iam_app_api::build_sdkwork_iam_app_api_router()
+        .await
+        .map_err(|error| format!("build embedded IAM app router failed: {error}"))
+}
 
 /// Build the fully composed and protected app-api router.
 ///
@@ -129,5 +173,9 @@ pub async fn app_router_with_host(host: &DramaDatabaseHost) -> Result<Router, St
             .with_readiness_check(health::drama_readiness(pool))
             .with_metrics(metrics),
     );
-    Ok(infra)
+
+    // Embedded IAM App API: same-origin login/session/user routes. Merged after
+    // the drama web-framework layer on purpose (see `iam_app_router`).
+    let iam = iam_app_router().await?;
+    Ok(infra.merge(iam))
 }

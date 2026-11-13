@@ -15,6 +15,7 @@ export interface MediaAssetsState {
 export function useMediaAssets(
   service: MediaService | null,
   episodeId: string | null,
+  enabled = true,
 ): MediaAssetsState {
   const [items, setItems] = useState<readonly MediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export function useMediaAssets(
   const requestId = useRef(0);
 
   const load = useCallback(async () => {
-    if (!service || !episodeId) {
+    if (!service || !episodeId || !enabled) {
       setItems([]);
       setError(null);
       return;
@@ -42,11 +43,17 @@ export function useMediaAssets(
     } finally {
       if (requestId.current === id) setLoading(false);
     }
-  }, [service, episodeId]);
+  }, [service, episodeId, enabled]);
 
   useEffect(() => {
+    if (!enabled) {
+      setItems([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
     void load();
-  }, [load]);
+  }, [enabled, load]);
 
   const add = useCallback((asset: MediaAsset) => {
     setItems((current) => [asset, ...current.filter((item) => item.id !== asset.id)]);

@@ -39,6 +39,7 @@ pub const MAX_UPLOAD_JSON_BODY_LIMIT_BYTES: usize = 96 * 1024 * 1024;
 /// payload idiom (`SDK_WORKSPACE_GENERATION_SPEC`-compatible contracts carry
 /// JSON bodies only).
 #[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateMediaAssetRequest {
     /// Asset kind: `cover`, `video`, `audio`, or `subtitle`.
     pub kind: String,
@@ -53,6 +54,7 @@ pub struct CreateMediaAssetRequest {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct EpisodeResource {
     #[serde(with = "sdkwork_utils_rust::serde_int64")]
     pub id: i64,
@@ -80,6 +82,7 @@ impl From<episode::Episode> for EpisodeResource {
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MediaAssetResource {
     #[serde(with = "sdkwork_utils_rust::serde_int64")]
     pub id: i64,

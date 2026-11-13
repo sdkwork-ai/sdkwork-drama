@@ -38,7 +38,10 @@ function initialEpisodeId(): string | null {
 
 export default function App({ runtime }: { readonly runtime: AppRuntime }) {
   const account = useIamAccount(runtime.services?.iam ?? null);
-  const episodes = useEpisodes(runtime.services?.episodes ?? null);
+  const episodes = useEpisodes(
+    runtime.services?.episodes ?? null,
+    account.snapshot.status === 'authenticated',
+  );
   const [view, setView] = useState<RailView>(initialView);
   const [selectedId, setSelectedId] = useState<string | null>(initialEpisodeId);
   const [dialog, setDialog] = useState<Dialog>(null);
@@ -49,7 +52,11 @@ export default function App({ runtime }: { readonly runtime: AppRuntime }) {
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
 
-  const media = useMediaAssets(runtime.services?.media ?? null, selectedId);
+  const media = useMediaAssets(
+    runtime.services?.media ?? null,
+    selectedId,
+    account.snapshot.status === 'authenticated',
+  );
 
   const selected = useMemo(
     () => episodes.items.find((episode) => episode.id === selectedId) ?? null,
@@ -63,10 +70,10 @@ export default function App({ runtime }: { readonly runtime: AppRuntime }) {
   }, [episodes.items, selectedId]);
 
   useEffect(() => {
-    if (selectedId !== null && selected === null && !episodes.loading) {
+    if (selectedId !== null && selected === null && episodes.loaded && !episodes.loading) {
       setSelectedId(episodes.items[0]?.id ?? null);
     }
-  }, [selected, selectedId, episodes.loading, episodes.items]);
+  }, [selected, selectedId, episodes.loaded, episodes.loading, episodes.items]);
 
   useEffect(() => {
     const url = new URL(window.location.href);
